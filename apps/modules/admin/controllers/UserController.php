@@ -18,9 +18,7 @@ use Models\User;
 class UserController extends BaseController
 {
     public function indexAction()
-    {
-
-    }
+    {}
 
     public function addAction()
     {

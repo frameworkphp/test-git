@@ -25,14 +25,14 @@ class LoginController extends Controller
                         // create session for user
                         $this->session->set('Auth', $users);
 
-                        $this->logger->name = 'access'; // Your own log name
-                        $this->logger->info(
-                            'LOG_IN_ADMINISTRATOR::'
-                            . $users->id . '::'
-                            . $users->email . '::'
-                            . $this->request->getUserAgent() . '::'
-                            . $this->request->getClientAddress()
-                        );
+//                        $this->logger->name = 'access'; // Your own log name
+//                        $this->logger->info(
+//                            'LOG_IN_ADMINISTRATOR::'
+//                            . $users->id . '::'
+//                            . $users->email . '::'
+//                            . $this->request->getUserAgent() . '::'
+//                            . $this->request->getClientAddress()
+//                        );
                     } else {
                         $this->flash->error('<strong>Oh snap!</strong> Password not match.');
                     }

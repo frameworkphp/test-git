@@ -33,7 +33,6 @@ class UserController extends BaseController
                     $user->email = $formData['email'];
                     $user->password = $this->security->hash($formData['password']);
                     $user->gender = $formData['gender'];
-                    $user->dateCreate = time();
 
                     if ($user->create()) {
                         $this->flash->success('<strong>Well done!</strong> Add user successfully');

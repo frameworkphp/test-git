@@ -5,8 +5,11 @@
     'name' => 'name',
     'email' => 'email',
     'password' => 'password',
+    'role' => 'role',
     'gender' => 'gender',
-    'datecreate' => 'dateCreate',
+    'status' => 'status',
+    'datecreated' => 'dateCreated',
+    'datemodified' => 'dateModified',
   ),
   1 => 
   array (
@@ -14,7 +17,10 @@
     'name' => 'name',
     'email' => 'email',
     'password' => 'password',
+    'role' => 'role',
     'gender' => 'gender',
-    'dateCreate' => 'datecreate',
+    'status' => 'status',
+    'dateCreated' => 'datecreated',
+    'dateModified' => 'datemodified',
   ),
 ); 

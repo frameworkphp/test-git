@@ -99,7 +99,7 @@
               'expr' => 
               array (
                 'type' => 301,
-                'value' => '2',
+                'value' => '200',
               ),
               'name' => 'length',
             ),
@@ -221,6 +221,54 @@
           'line' => -1,
         ),
       ),
+      'role' => 
+      array (
+        0 => 
+        array (
+          'type' => 300,
+          'name' => 'Column',
+          'arguments' => 
+          array (
+            0 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 303,
+                'value' => 'string',
+              ),
+              'name' => 'type',
+            ),
+            1 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 301,
+                'value' => '50',
+              ),
+              'name' => 'length',
+            ),
+            2 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 305,
+              ),
+              'name' => 'nullable',
+            ),
+            3 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 303,
+                'value' => 'role',
+              ),
+              'name' => 'column',
+            ),
+          ),
+          'file' => 'F:\\wamp\\www\\framework\\apps\\models\\User.php',
+          'line' => -1,
+        ),
+      ),
       'gender' => 
       array (
         0 => 
@@ -269,7 +317,55 @@
           'line' => -1,
         ),
       ),
-      'dateCreate' => 
+      'status' => 
+      array (
+        0 => 
+        array (
+          'type' => 300,
+          'name' => 'Column',
+          'arguments' => 
+          array (
+            0 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 303,
+                'value' => 'integer',
+              ),
+              'name' => 'type',
+            ),
+            1 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 301,
+                'value' => '1',
+              ),
+              'name' => 'length',
+            ),
+            2 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 305,
+              ),
+              'name' => 'nullable',
+            ),
+            3 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 303,
+                'value' => 'status',
+              ),
+              'name' => 'column',
+            ),
+          ),
+          'file' => 'F:\\wamp\\www\\framework\\apps\\models\\User.php',
+          'line' => -1,
+        ),
+      ),
+      'dateCreated' => 
       array (
         0 => 
         array (
@@ -308,7 +404,55 @@
               'expr' => 
               array (
                 'type' => 303,
-                'value' => 'datecreate',
+                'value' => 'datecreated',
+              ),
+              'name' => 'column',
+            ),
+          ),
+          'file' => 'F:\\wamp\\www\\framework\\apps\\models\\User.php',
+          'line' => -1,
+        ),
+      ),
+      'dateModified' => 
+      array (
+        0 => 
+        array (
+          'type' => 300,
+          'name' => 'Column',
+          'arguments' => 
+          array (
+            0 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 303,
+                'value' => 'integer',
+              ),
+              'name' => 'type',
+            ),
+            1 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 301,
+                'value' => '10',
+              ),
+              'name' => 'length',
+            ),
+            2 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 305,
+              ),
+              'name' => 'nullable',
+            ),
+            3 => 
+            array (
+              'expr' => 
+              array (
+                'type' => 303,
+                'value' => 'datemodified',
               ),
               'name' => 'column',
             ),

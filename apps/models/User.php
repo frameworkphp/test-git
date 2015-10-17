@@ -34,12 +34,38 @@ class User extends BaseModel
     public $password;
 
     /**
+     * @Column(type="string", length=50, nullable=false, column="role")
+     */
+    public $role;
+
+    /**
      * @Column(type="string", length=200, nullable=false, column="gender")
      */
     public $gender;
 
     /**
-     * @Column(type="integer", length=10, nullable=false, column="datecreate")
+     * @Column(type="integer", length=1, nullable=false, column="status")
      */
-    public $dateCreate;
+    public $status;
+
+    /**
+     * @Column(type="integer", length=10, nullable=false, column="datecreated")
+     */
+    public $dateCreated;
+
+    /**
+     * @Column(type="integer", length=10, nullable=false, column="datemodified")
+     */
+    public $dateModified;
+
+
+    public function beforeCreate()
+    {
+        $this->dateCreated = time();
+    }
+
+    public function beforeUpdate()
+    {
+        $this->dateModified = time();
+    }
 }

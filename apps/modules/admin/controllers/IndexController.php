@@ -13,4 +13,10 @@ class IndexController extends BaseController
     {
 
     }
+
+    public function logoutAction()
+    {
+        $this->session->destroy();
+        $this->response->redirect('admin');
+    }
 }

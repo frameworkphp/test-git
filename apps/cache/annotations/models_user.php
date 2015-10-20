@@ -1,27 +1,6 @@
 <?php return Phalcon\Annotations\Reflection::__set_state(array(
    '_reflectionData' => 
   array (
-    'class' => 
-    array (
-      0 => 
-      array (
-        'type' => 300,
-        'name' => 'Source',
-        'arguments' => 
-        array (
-          0 => 
-          array (
-            'expr' => 
-            array (
-              'type' => 303,
-              'value' => 'user',
-            ),
-          ),
-        ),
-        'file' => 'F:\\wamp\\www\\framework\\apps\\models\\User.php',
-        'line' => 6,
-      ),
-    ),
     'properties' => 
     array (
       'id' => 

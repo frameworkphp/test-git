@@ -2,13 +2,6 @@
 
 namespace Models;
 
-/**
- * User
- *
- * Represents a User
- *
- * @Source('user');
- */
 class User extends BaseModel
 {
     /**
@@ -36,28 +29,33 @@ class User extends BaseModel
     /**
      * @Column(type="string", length=50, nullable=false, column="role")
      */
-    public $role;
+    public $role = 'member';
 
     /**
      * @Column(type="string", length=200, nullable=false, column="gender")
      */
-    public $gender;
+    public $gender = 'male';
 
     /**
      * @Column(type="integer", length=1, nullable=false, column="status")
      */
-    public $status;
+    public $status = 0;
 
     /**
      * @Column(type="integer", length=10, nullable=false, column="datecreated")
      */
-    public $dateCreated;
+    public $dateCreated = 0;
 
     /**
      * @Column(type="integer", length=10, nullable=false, column="datemodified")
      */
-    public $dateModified;
+    public $dateModified = 0;
 
+
+    public function initialize()
+    {
+        $this->setSource(DB_PREFIX . 'user');
+    }
 
     public function beforeCreate()
     {

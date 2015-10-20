@@ -3,6 +3,7 @@
  * Services are globally registered in this file
  */
 
+use Phalcon\Config;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Router;
 use Phalcon\Mvc\Dispatcher;
@@ -13,7 +14,6 @@ use Phalcon\Mvc\Model\Manager as ModelsManager;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
-// use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Mvc\Model\Metadata\Files as MetaDataAdapter;
 use Phalcon\Annotations\Adapter\Files as AnnotationsAdapter;
 use Annotations\AnnotationsMetaDataInitializer;
@@ -34,6 +34,7 @@ $di['router'] = function () {
 /**
  * Register the configuration itself as a service
  */
+$config = new Config(include ROOT_URL . '/apps/config/config.php');
 $di->setShared('config', function () use ($config) {
     return $config;
 });
@@ -43,7 +44,7 @@ $di->setShared('config', function () use ($config) {
  */
 $di['url'] = function () use ($config) {
     $url = new UrlResolver();
-    $url->setBaseUri($config->application->baseUri);
+    $url->setBaseUri($config->baseUri);
 
     return $url;
 };
@@ -68,7 +69,7 @@ $di['view'] = function () use ($config) {
         '.volt' => function ($view, $di) use ($config) {
             $volt = new VoltEngine($view, $di);
             $volt->setOptions(array(
-                'compiledPath' => $config->application->cacheDir,
+                'compiledPath' => $config->application->cacheDir . 'volt/',
                 'compiledSeparator' => '_'
             ));
 
@@ -162,16 +163,6 @@ $di['flash'] = function () {
     ));
     return $flash;
 };
-
-//$loader = new \Phalcon\Loader();
-//
-///**
-// * We're a registering a set of directories taken from the configuration file
-// */
-//$loader->registerNamespaces(array(
-//    'Annotations' => ROOT_URL . '/apps/library/Annotations/',
-//))->register();
-//$di['loader'] = $loader;
 
 $di['loader'] = function () {
     return require_once ROOT_URL . '/apps/config/loaders.php';

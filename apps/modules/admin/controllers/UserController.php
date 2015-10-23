@@ -18,35 +18,62 @@ use Models\User;
 class UserController extends BaseController
 {
     public function indexAction()
-    {}
+    {
+    }
 
     public function addAction()
     {
-        $formData = array();
+        $error = [];
+        $formData = [];
         if ($this->request->isPost()) {
             if ($this->security->checkToken()) {
                 $formData = $this->request->getPost();
-                $myUser = User::findFirstByEmail($formData['email']);
-                if (!$myUser) {
-                    $user = new User();
-                    $user->name = $formData['name'];
-                    $user->email = $formData['email'];
-                    $user->password = $this->security->hash($formData['password']);
-                    $user->gender = $formData['gender'];
+                if ($this->addUserValidator($formData, $error)) {
+                    $myUser = User::findFirstByEmail($formData['email']);
+                    if (!$myUser) {
+                        $userModel = new User();
+                        $userModel->name = $formData['name'];
+                        $userModel->email = $formData['email'];
+                        $userModel->password = $this->security->hash($formData['password']);
+                        $userModel->gender = $formData['gender'];
+                        $userModel->role = $formData['role'];
 
-                    if ($user->create()) {
-                        $this->flash->success('<strong>Well done!</strong> Add user successfully');
+                        if ($userModel->create()) {
+                            $this->flash->success('<strong>Well done!</strong> Add user successfully');
+                        } else {
+                            $error = $userModel->getMessages();
+                        }
                     } else {
-                        $this->flash->error('<strong>Oh snap!</strong> System error.');
+                        $error[] = '<strong>Oh snap!</strong> User already exists.';
                     }
-                } else {
-                    $this->flash->error('<strong>Oh snap!</strong> User already exists.');
                 }
+            }
+
+            if (!empty($error)) {
+                $this->flash->outputMessage('error', $error);
             }
         }
 
         $this->view->setVars([
-            'formData' => $formData
+            'formData' => $formData,
+            'roles' => User::$roles
         ]);
+    }
+
+    public function addUserValidator($formData, &$error)
+    {
+        $pass = true;
+
+        if ($formData['name'] == '') {
+            $error[] = 'Name is required';
+            $pass = false;
+        }
+
+        if ($formData['email'] == '') {
+            $error[] = 'Email is required';
+            $pass = false;
+        }
+
+        return $pass;
     }
 }

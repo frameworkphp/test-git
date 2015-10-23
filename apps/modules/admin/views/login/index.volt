@@ -9,7 +9,7 @@
 
     {{ stylesheet_link('plugins/bootstrap/css/bootstrap.min.css') }}
     {{ stylesheet_link('plugins/font-awesome/css/font-awesome.css') }}
-    {{ stylesheet_link('css/admin/endless.min.css') }}
+    {{ stylesheet_link('css/admin/main.css') }}
 </head>
 
 <body>

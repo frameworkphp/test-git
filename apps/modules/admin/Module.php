@@ -3,7 +3,7 @@ namespace Modules\Admin;
 
 use Phalcon\Loader;
 use Phalcon\Mvc\Dispatcher;
-use Phalcon\DI\FactoryDefault as DI;
+use Phalcon\DI\FactoryDefault;
 
 class Module
 {
@@ -12,15 +12,13 @@ class Module
      */
     public function registerAutoloaders()
     {
-        $loader = DI::getDefault()->get('loader');
+        $loader = FactoryDefault::getDefault()->get('loader');
 
         $loader->registerNamespaces([
             'Admin\Controllers' => ROOT_URL . '/apps/modules/admin/controllers/',
             'Plugins' => ROOT_URL . '/apps/plugins/',
             'Models' => ROOT_URL . '/apps/models/'
         ],true);
-
-        //$loader->register();
     }
 
     /**

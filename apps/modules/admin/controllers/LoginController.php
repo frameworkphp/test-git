@@ -7,6 +7,7 @@
  */
 namespace Admin\Controllers;
 
+use Models\Logs;
 use Models\User;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Controller;
@@ -25,14 +26,21 @@ class LoginController extends Controller
                         // create session for user
                         $this->session->set('Auth', $users);
 
-//                        $this->logger->name = 'access'; // Your own log name
-//                        $this->logger->info(
-//                            'LOG_IN_ADMINISTRATOR::'
-//                            . $users->id . '::'
-//                            . $users->email . '::'
-//                            . $this->request->getUserAgent() . '::'
-//                            . $this->request->getClientAddress()
-//                        );
+                        // Handel write log
+                        $infoLog = [
+                            'user_id' => $users->id,
+                            'email' => $users->email,
+                            'user_agent' => $this->request->getUserAgent(),
+                            'ip_address' => $this->request->getClientAddress()
+                        ];
+                        Logs::log('Login', serialize($infoLog), Logs::INFO);
+
+                        $redirect = $this->dispatcher->getParam('redirect');
+                        if ($redirect != '') {
+                            $this->response->redirect($redirect);
+                        } else {
+                            $this->response->redirect('admin');
+                        }
                     } else {
                         $this->flash->error('<strong>Oh snap!</strong> Password not match.');
                     }

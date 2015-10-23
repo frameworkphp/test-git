@@ -13,6 +13,9 @@
         <!-- Font Awesome -->
         {{ stylesheet_link('plugins/font-awesome/css/font-awesome.min.css') }}
 
+        <!-- Chosen -->
+        {{ stylesheet_link('css/admin/chosen.min.css') }}
+
         <!-- Pace -->
         {{ stylesheet_link('css/admin/pace.css') }}
 
@@ -58,7 +61,10 @@
         {{javascript_include('public/plugins/bootstrap/js/bootstrap.js')}}
 
         <!-- Flot -->
-        {{javascript_include('public/js/admin/jquery.flot.min.js')}}
+        <!--{{javascript_include('public/js/admin/jquery.flot.min.js')}}-->
+
+        <!-- Chosen -->
+        {{javascript_include('public/js/admin/chosen.jquery.min.js')}}
 
         <!-- Morris -->
         {{javascript_include('public/js/admin/rapheal.min.js')}}
@@ -86,7 +92,7 @@
         {{javascript_include('public/js/admin/jquery.cookie.min.js')}}
 
         <!-- Endless -->
-        {{javascript_include('public/js/admin/endless_dashboard.js')}}
+        <!--{{javascript_include('public/js/admin/endless_dashboard.js')}}-->
         {{javascript_include('public/js/admin/main.js')}}
         {{javascript_include('public/js/admin/parsley.min.js')}}
     </body>

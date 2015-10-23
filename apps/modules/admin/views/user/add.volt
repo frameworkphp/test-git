@@ -56,25 +56,16 @@
                             </div>
                             <!-- /.col -->
                         </div>
-                        <!-- /form-group -->
                         <div class="form-group">
-                            <label class="control-label col-md-2">Address</label>
-
-                            <div class="col-md-8">
-                                <textarea class="form-control" name="address" rows="3"></textarea>
-                            </div>
-                            <!-- /.col -->
-                        </div>
-                        <!-- /form-group -->
-                        <div class="form-group">
-                            <label class="control-label col-md-2">Phone</label>
-
-                            <div class="col-md-8">
-                                <input type="text" name="phone" class="form-control input-sm">
-                            </div>
-                            <!-- /.col -->
-                        </div>
-                        <!-- /form-group -->
+                            <label class="col-lg-2 control-label">User Group</label>
+                            <div class="col-lg-8">
+                                <select class="form-control chzn-select" name="role">
+                                    {% for name, value in roles %}
+                                        <option value="{{name}}">{{value}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div><!-- /.col -->
+                        </div><!-- /form-group -->
 
                     </div>
                     <div class="panel-footer">

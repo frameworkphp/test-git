@@ -14,5 +14,7 @@ class BaseController extends Controller
                 'action' => 'index'
             ]);
         }
+
+        $this->tag->setTitle('Welcome to PHP Framework');
     }
 }

@@ -51,10 +51,23 @@ class User extends BaseModel
      */
     public $dateModified = 0;
 
+    /**
+     * Declare const
+     */
+    const STATUS_ACTIVE = 1;
+
+    /**
+     * @var array roles
+     */
+    public static $roles = [
+        'member' => 'Member',
+        'employee' => 'Employee',
+        'admin' => 'Admin',
+    ];
 
     public function initialize()
     {
-        $this->setSource(DB_PREFIX . 'user');
+        $this->setSource(TABLE_PREFIX . 'user');
     }
 
     public function beforeCreate()

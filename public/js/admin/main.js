@@ -1,6 +1,6 @@
-
 $(function	()	{
 
+	$(".chzn-select").chosen();
 	// Cookie validation
 	if(jQuery.type($.cookie('skin_color')) != 'undefined')	{
 	

@@ -4,16 +4,12 @@ use Phalcon\Mvc\Application;
 
 error_reporting(E_ALL&~E_NOTICE);
 
-ini_set('display_errors', 1);
+(new Phalcon\Debug)->listen();
 
 define('ROOT_URL', realpath('..'));
+define('TABLE_PREFIX', 'tb_');
 
-try {
-
-    /**
-     * Read the configuration
-     */
-    $config = include ROOT_URL . '/apps/config/config.php';
+//try {
 
     /**
      * Autoload composer
@@ -41,9 +37,9 @@ try {
     require ROOT_URL . '/apps/config/modules.php';
 
     echo $application->handle()->getContent();
-
-} catch (Phalcon\Exception $e) {
-    echo $e->getMessage();
-} catch (PDOException $e) {
-    echo $e->getMessage();
-}
+//
+//} catch (Phalcon\Exception $e) {
+//    echo $e->getMessage();
+//} catch (PDOException $e) {
+//    echo $e->getMessage();
+//}

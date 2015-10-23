@@ -40,6 +40,13 @@ $di->setShared('config', function () use ($config) {
 });
 
 /**
+ * Autoload
+ */
+$di['loader'] = function () {
+    return require_once ROOT_URL . '/apps/config/loaders.php';
+};
+
+/**
  * The URL component is used to generate all kind of urls in the application
  */
 $di['url'] = function () use ($config) {
@@ -164,7 +171,12 @@ $di['flash'] = function () {
     return $flash;
 };
 
-$di['loader'] = function () {
-    return require_once ROOT_URL . '/apps/config/loaders.php';
-};
-
+/**
+ * Logger
+ */
+$di->setShared('logger', function () use ($di){
+    return new Phalcon\Logger\Adapter\Database('errors', array(
+        'db' => $di->get('db'),
+        'table' => TABLE_PREFIX . 'logs'
+    ));
+});

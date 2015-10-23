@@ -7,6 +7,7 @@ $loader = new \Phalcon\Loader();
  */
 $loader->registerNamespaces(array(
     'Annotations' => ROOT_URL . '/apps/library/Annotations/',
+    'Phalcon' =>  ROOT_URL . '/apps/library/Phalcon/'
 ))->register();
 
 return $loader;

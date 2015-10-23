@@ -6,8 +6,7 @@ return [
         'host' => 'localhost',
         'username' => 'root',
         'password' => '',
-        'dbname' => 'framework',
-        'prefix' => 'pn_'
+        'dbname' => 'framework'
     ],
     'application' => [
         'modelsDir' => ROOT_URL . '/apps/models/',

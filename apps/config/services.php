@@ -40,7 +40,7 @@ $di->setShared('config', function () use ($config) {
 });
 
 /**
- * Autoload
+ * Auto loader
  */
 $di['loader'] = function () {
     return require_once ROOT_URL . '/apps/config/loaders.php';

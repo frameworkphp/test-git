@@ -18,6 +18,7 @@ use Phalcon\Mvc\Model\Metadata\Files as MetaDataAdapter;
 use Phalcon\Annotations\Adapter\Files as AnnotationsAdapter;
 use Annotations\AnnotationsMetaDataInitializer;
 use Annotations\AnnotationsInitializer;
+use Library\Acl as Acl;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -89,12 +90,9 @@ $di['view'] = function () use ($config) {
 };
 
 //Set a models manager
-$di['modelsManager'] = function() {
-
+$di['modelsManager'] = function () {
     $eventsManager = new EventsManager();
-
     $modelsManager = new ModelsManager();
-
     $modelsManager->setEventsManager($eventsManager);
 
     //Attach a listener to models-manager
@@ -103,7 +101,7 @@ $di['modelsManager'] = function() {
     return $modelsManager;
 };
 
-$di['annotations'] = function() {
+$di['annotations'] = function () {
     return new AnnotationsAdapter(array(
         'annotationsDir' => ROOT_URL . '/apps/cache/annotations/'
     ));
@@ -112,7 +110,7 @@ $di['annotations'] = function() {
 /**
  * If the configuration specify the use of metadata adapter use it or use memory otherwise
  */
-$di['modelsMetadata'] = function() {
+$di['modelsMetadata'] = function () {
     //Use the memory meta-data adapter in development
     $metaData = new MetaDataAdapter([
         'metaDataDir' => ROOT_URL . '/apps/cache/metadata/'
@@ -128,7 +126,6 @@ $di['modelsMetadata'] = function() {
  * We register the events manager
  */
 $di['dispatcher'] = function () use ($di) {
-
     $eventsManager = new EventsManager;
 
     /**
@@ -143,6 +140,16 @@ $di['dispatcher'] = function () use ($di) {
 
     $dispatcher = new Dispatcher;
     $dispatcher->setEventsManager($eventsManager);
+
+    // Attach a listener for type "acl"
+    $eventsManager->attach("acl", function ($event, $acl) {
+        if ($event->getType() == "beforeCheckAccess") {
+            echo $acl->getActiveRole(),
+            $acl->getActiveResource(),
+            $acl->getActiveAccess();
+        }
+    });
+
 
     return $dispatcher;
 };
@@ -174,9 +181,17 @@ $di['flash'] = function () {
 /**
  * Logger
  */
-$di->setShared('logger', function () use ($di){
+$di->setShared('logger', function () use ($di) {
     return new Phalcon\Logger\Adapter\Database('errors', array(
         'db' => $di->get('db'),
         'table' => TABLE_PREFIX . 'logs'
     ));
 });
+
+/**
+ * Access Control List
+ */
+$di['acl'] = function () {
+    $resources = require_once ROOT_URL . '/apps/config/acl.php';
+    return new Acl($resources);
+};

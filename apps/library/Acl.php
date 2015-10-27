@@ -21,7 +21,7 @@ use Phalcon\Acl\Resource as Resource;
 class Acl extends Component
 {
     /**
-     * The ACL Object
+     * The Acl Object
      *
      * @var \Phalcon\Acl\Adapter\Memory
      */
@@ -69,11 +69,11 @@ class Acl extends Component
             return $this->acl;
         }
 
-        // Get the ACL from the data file
+        // Get the acl from the data file
         $data = file_get_contents(ROOT_URL . $this->filePath);
         $this->acl = unserialize($data);
 
-        // Store the ACL in APC
+        // Save in APC
         if (function_exists('apc_store')) {
             apc_store('acl', $this->acl);
         }
@@ -98,10 +98,10 @@ class Acl extends Component
         }
 
         if (touch(ROOT_URL . $this->filePath) && is_writable(ROOT_URL . $this->filePath)) {
-            // Store the acl in File
+            // Save in File
             file_put_contents(ROOT_URL . $this->filePath, serialize($acl));
 
-            // Store the Acl in APC
+            // Save cache in APC
             if (function_exists('apc_store')) {
                 apc_store('acl', $acl);
             }

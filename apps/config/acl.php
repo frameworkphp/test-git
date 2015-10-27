@@ -11,7 +11,34 @@
  * All Rights Reserved.
  * ----------------------------------------------
  */
-class acl
-{
-
-}
+return [
+    'guest' => [
+        'Site' => [
+            'index' => '*',
+            'error' => '*',
+            'login' => '*'
+        ],
+        'Admin' => [
+            'login' => '*'
+        ]
+    ],
+    'member' => [
+        'Site' => [
+            'index' => '*',
+            'error' => '*'
+        ],
+        'Admin' => [
+            'login' => '*'
+        ]
+    ],
+    'admin' => [
+        'Site' => [
+            'index' => '*',
+            'error' => '*'
+        ],
+        'Admin' => [
+            'index' => '*',
+            'user' => '*'
+        ]
+    ],
+];

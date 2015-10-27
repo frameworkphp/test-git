@@ -21,12 +21,13 @@ class Breadcrumbs
 
     /**
      * Constructor
+     * @param string $module
      */
-    public function __construct()
+    public function __construct($module = '')
     {
         $this->_elements[] = [
             'active' => false,
-            'link' => '/',
+            'link' => '/' . $module,
             'text' => 'Home',
         ];
     }

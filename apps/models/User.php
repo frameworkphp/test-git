@@ -79,4 +79,30 @@ class User extends BaseModel
     {
         $this->dateModified = time();
     }
+
+    public static function getRoleById($id)
+    {
+        $role = self::findFirst([
+            'conditions' => 'id = :userId:',
+            'bind'       => ['userId' => $id],
+            'columns'    => ['role'],
+            'cache'      => [
+                'key'      => HOST_HASH . md5(get_class() . '::getRoleById::' . $id),
+                'lifetime' => 3600,
+            ]
+        ]);
+
+        if ($role) {
+            return $role->role;
+        } else {
+            return 'guest';
+        }
+    }
+
+    public function afterUpdate()
+    {
+        $cache = $this->getDi()->get('cache');
+        $key = HOST_HASH . md5(get_class() . '::getRoleById::' . $this->id);
+        $cache->delete($key);
+    }
 }

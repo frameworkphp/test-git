@@ -9,7 +9,7 @@
 namespace Site\Controllers;
 
 
-class ErrorsController extends ControllerBase
+class ErrorController extends ControllerBase
 {
     public function initialize()
     {

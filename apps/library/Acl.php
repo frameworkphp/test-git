@@ -14,7 +14,7 @@
 namespace Library;
 
 use Phalcon\Mvc\User\Component;
-use Phalcon\Acl\Adapter\Memory as AclMemory;
+use Phalcon\Acl\Adapter\Memory as AclList;
 use Phalcon\Acl\Role as Role;
 use Phalcon\Acl\Resource as Resource;
 
@@ -83,7 +83,7 @@ class Acl extends Component
 
     public function createAcl()
     {
-        $acl = new AclMemory();
+        $acl = new AclList();
         $acl->setDefaultAction(\Phalcon\Acl::DENY);
 
         foreach ($this->resources as $role => $groups) {

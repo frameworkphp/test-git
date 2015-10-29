@@ -21,7 +21,9 @@ class AnnotationsInitializer extends \Phalcon\Mvc\User\Plugin
     /**
      * This is called after initialize the model
      *
-     * @param Phalcon\Events\Event $event
+     * @param Event $event
+     * @param ModelsManager $manager
+     * @param $model
      */
     public function afterInitialize(Event $event, ModelsManager $manager, $model)
     {

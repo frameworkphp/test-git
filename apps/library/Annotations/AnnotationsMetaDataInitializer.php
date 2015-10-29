@@ -23,9 +23,10 @@ class AnnotationsMetaDataInitializer implements \Phalcon\Mvc\Model\MetaData\Stra
     /**
      * Initializes the model's meta-data
      *
-     * @param Phalcon\Mvc\ModelInterface $model
-     * @param Phalcon\DiInterface $di
+     * @param ModelInterface $model
+     * @param DiInterface $di
      * @return array
+     * @throws Exception
      */
     public function getMetaData(ModelInterface $model, DiInterface $di)
     {

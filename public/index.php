@@ -8,6 +8,7 @@ error_reporting(E_ALL&~E_NOTICE);
 
 define('ROOT_URL', realpath('..'));
 define('TABLE_PREFIX', 'tb_');
+define('HOST_HASH', substr(md5($_SERVER['HTTP_HOST']), 0, 12));
 
 //try {
 

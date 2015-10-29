@@ -1,12 +1,14 @@
 <?php
 namespace Admin\Controllers;
 
+use Library\Breadcrumbs;
 use Phalcon\Mvc\Controller;
 
 class BaseController extends Controller
 {
     public function initialize()
     {
+        $this->breadcrumbs();
         if (!$this->session->get('Auth')) {
             return $this->dispatcher->forward([
                 'module' => 'admin',
@@ -16,5 +18,29 @@ class BaseController extends Controller
         }
 
         $this->tag->setTitle('Welcome to PHP Framework');
+    }
+
+    public function breadcrumbs()
+    {
+        $module = $this->router->getModuleName();
+        $controller = $this->router->getControllerName();
+        $action = $this->router->getActionName();
+
+        $breadcrumbs = new Breadcrumbs($module);
+        if ($controller) {
+            $breadcrumbs->add(
+                ucfirst($controller),
+                $module . '/' . $controller
+            );
+        }
+
+        if ($action) {
+            $breadcrumbs->add(
+                ucfirst($action),
+                $module . '/' . $controller . '/' . $action
+            );
+        }
+
+        $this->view->setVar('breadcrumbs', $breadcrumbs->generate());
     }
 }

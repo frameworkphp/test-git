@@ -1,30 +1,22 @@
 <?php
 namespace Modules\Site;
 
-use Phalcon\Loader;
-use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
-use Phalcon\Mvc\ModuleDefinitionInterface;
-use Phalcon\Mvc\Dispatcher;
+use Phalcon\DI\FactoryDefault;
 
-class Module implements ModuleDefinitionInterface
+class Module
 {
     /**
      * Registers the module auto-loader
      */
     public function registerAutoloaders()
     {
+        $loader = FactoryDefault::getDefault()->get('loader');
 
-        $loader = new Loader();
-
-        $loader->registerNamespaces(array(
+        $loader->registerNamespaces([
             'Site\Controllers' => ROOT_URL . '/apps/modules/site/controllers/',
             'Plugins' => ROOT_URL . '/apps/plugins/',
-            'Modules\Models\Entities' => ROOT_URL . '/apps/models/entities/',
-            'Modules\Models\Services' => ROOT_URL . '/apps/models/services/',
-            'Modules\Models\Repositories' => ROOT_URL . '/apps/models/repositories/'
-        ));
-
-        $loader->register();
+            'Models' => ROOT_URL . '/apps/models/'
+        ],true);
     }
 
     /**

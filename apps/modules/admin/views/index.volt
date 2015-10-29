@@ -38,8 +38,18 @@
             <div id="main-container">
                 <div id="breadcrumb">
                     <ul class="breadcrumb">
-                        <li><i class="fa fa-home"></i><a href="index.html"> Home</a></li>
-                        <li class="active">Dashboard</li>
+                        {% for bc in breadcrumbs %}
+                        <li>
+                            {% if (bc['text'] == 'Home') %}
+                                <i class="fa fa-home"></i>
+                            {% endif %}
+                            {% if (bc['active']) %}
+                                {{ bc['text'] }}
+                            {% else %}
+                                <a href="{{ bc['link'] }}"> {{ bc['text'] }}</a>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
                     </ul>
                 </div><!-- /breadcrumb-->
 

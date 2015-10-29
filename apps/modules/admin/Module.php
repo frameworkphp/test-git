@@ -1,8 +1,6 @@
 <?php
 namespace Modules\Admin;
 
-use Phalcon\Loader;
-use Phalcon\Mvc\Dispatcher;
 use Phalcon\DI\FactoryDefault;
 
 class Module

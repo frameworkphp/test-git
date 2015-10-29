@@ -123,15 +123,18 @@ $di['modelsMetadata'] = function () {
 };
 
 /**
+ * Access Control List
+ */
+$di['acl'] = function () {
+    $resources = require_once ROOT_URL . '/apps/config/acl.php';
+    return new Acl($resources);
+};
+
+/**
  * We register the events manager
  */
 $di['dispatcher'] = function () use ($di) {
     $eventsManager = new EventsManager;
-
-    /**
-     * Check if the user is allowed to access certain action using the SecurityPlugin
-     */
-    //$eventsManager->attach('dispatch:beforeDispatch', new \Plugins\SecurityPlugin);
 
     /**
      * Handle exceptions and not-found exceptions using NotFoundPlugin
@@ -139,18 +142,13 @@ $di['dispatcher'] = function () use ($di) {
     //$eventsManager->attach('dispatch:beforeException', new \Plugins\NotFoundPlugin);
 
     $dispatcher = new Dispatcher;
+
+    /**
+     * Check if the user is allowed to access certain action using the SecurityPlugin
+     */
+    $eventsManager->attach('dispatch:beforeDispatch', new \Plugins\Acl);
+
     $dispatcher->setEventsManager($eventsManager);
-
-    // Attach a listener for type "acl"
-    $eventsManager->attach("acl", function ($event, $acl) {
-        if ($event->getType() == "beforeCheckAccess") {
-            echo $acl->getActiveRole(),
-            $acl->getActiveResource(),
-            $acl->getActiveAccess();
-        }
-    });
-
-
     return $dispatcher;
 };
 
@@ -170,7 +168,7 @@ $di['db'] = function () use ($config) {
  * Register the flash service with custom CSS classes
  */
 $di['flash'] = function () {
-    $flash = new \Phalcon\Flash\Direct(array(
+    $flash = new Phalcon\Flash\Direct(array(
         'error' => 'alert alert-danger',
         'success' => 'alert alert-success',
         'notice' => 'alert alert-info',
@@ -188,10 +186,26 @@ $di->setShared('logger', function () use ($di) {
     ));
 });
 
-/**
- * Access Control List
- */
-$di['acl'] = function () {
-    $resources = require_once ROOT_URL . '/apps/config/acl.php';
-    return new Acl($resources);
+$di['modelsCache'] = function () use ($config) {
+    $frontCache = new Phalcon\Cache\Frontend\Data([
+        'lifetime' => 60,
+        'prefix' => HOST_HASH,
+    ]);
+
+    $cache = '';
+    switch ($config->cache) {
+        case 'file':
+            $cache = new Phalcon\Cache\Backend\File($frontCache, [
+                'cacheDir' => ROOT_URL . '/apps/cache/model/'
+            ]);
+            break;
+        case 'memcache':
+            $cache = new Phalcon\Cache\Backend\Memcache($frontCache, [
+                'host' => $config->memcache->host,
+                'port' => $config->memcache->port,
+            ]);
+            break;
+    }
+
+    return $cache;
 };

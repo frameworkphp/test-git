@@ -17,5 +17,6 @@ return [
     'memcache' => [
         'host' => 'localhost',
         'port' => 11211,
-    ]
+    ],
+    'cache' => 'file'
 ];

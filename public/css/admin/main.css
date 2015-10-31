@@ -324,8 +324,8 @@
     padding: 5px 10px;
     border-bottom: 1px solid #eee;
     margin-bottom: 0;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 100;
     box-shadow: 0 1px 0 #fff;
     -moz-box-shadow: 0 1px 0 #fff;
     -webkit-box-shadow: 0 1px 0 #fff;
@@ -340,6 +340,10 @@
 .breadcrumb a {
     text-decoration: none;
     color: #777
+}
+
+.breadcrumb .fa {
+    margin-right: 5px;
 }
 
 aside {
@@ -1111,6 +1115,14 @@ a:focus, a:hover {
 
 .pagination li a:focus, .pagination li a:hover {
     background: #f2f2f2
+}
+
+.pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {
+    color: #777;
+    cursor: default;
+    background-color: #fff;
+    border-color: #ddd;
+    opacity: 0.5;
 }
 
 .progress {
@@ -2955,6 +2967,16 @@ footer hr {
     border-color: #f1f5fc
 }
 
+.panel.panel-default .panel-title {
+    margin: 2px 0px;
+    font-size: 15px;
+}
+
+.panel.panel-default .panel-title .fa {
+    font-size: 16px;
+    margin-right: 5px;
+}
+
 .panel.panel-default .panel-heading + .panel-collapse .panel-body {
     border-top-color: #f1f5fc
 }
@@ -2962,7 +2984,8 @@ footer hr {
 .panel.panel-default .panel-heading {
     background: #fff;
     color: #777;
-    border-color: #f1f5fc
+    border-color: #f1f5fc;
+    height: 43px;
 }
 
 .panel.panel-default .panel-title a {
@@ -3259,6 +3282,10 @@ footer hr {
     clear: both
 }
 
+.panel>.panel-body+.table {
+    border: none;
+}
+
 .tab-bar {
     list-style: none;
     margin: 0
@@ -3525,6 +3552,22 @@ footer hr {
     border-right: 1px solid #eee
 }
 
+.table th .fa {
+    margin-left: 5px;
+}
+
+.table th.sortable .fa {
+    display: none;
+}
+
+.table th.sortable a:hover .fa {
+    display: inherit;
+}
+
+.table-striped {
+    border-collapse: inherit;
+}
+
 .table.table-vertical-center td, .table.table-vertical-center th {
     vertical-align: middle
 }
@@ -3534,7 +3577,8 @@ footer hr {
 }
 
 .table thead > tr > th {
-    border-color: #eee
+    border-color: #eee;
+    border-bottom: 0px solid #eee;
 }
 
 .table tbody > tr {

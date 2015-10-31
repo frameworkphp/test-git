@@ -1,32 +1,4 @@
 $(function	()	{
-
-	//Flot Chart
-	//Website traffic chart				
-	var init = { data: [[0, 5], [1, 8], [2, 5], [3, 8], [4, 7], [5,9], [6, 8], [7, 8], [8, 10], [9, 12], [10, 10]],
-			 label: "Visitor"
-		},
-		options = {	
-			series: {
-				lines: {
-					show: true, 
-					fill: true,
-					fillColor: 'rgba(121,206,167,0.2)'
-				},
-				points: {
-					show: true,
-					radius: '4.5'
-				}
-			},
-			grid: {
-				hoverable: true,
-				clickable: true
-			},
-			colors: ["#37b494"]
-		},
-		plot;
-			
-	plot = $.plot($('#placeholder'), [init], options);
-			
 	$("<div id='tooltip'></div>").css({
 		position: "absolute",
 		display: "none",
@@ -79,69 +51,6 @@ $(function	()	{
 		
 	animate();
 
-	//Morris Chart
-	var donutChart = Morris.Donut({
-	  element: 'donutChart',
-	  data: [
-		{label: "Download Sales", value: 1236},
-		{label: "In-Store Sales", value: 3091},
-		{label: "Mail-Order Sales", value: 2781}
-	  ],
-	  colors: ['#f3ce85','#65CEA7' ,'#FC8675']
-	});
-	
-	var lineChart = Morris.Line({
-		element: 'lineChart',
-		data: [
-			{ y: '2006', a: 30,  b: 20 },
-			{ y: '2007', a: 45,  b: 35 },
-			{ y: '2008', a: 60,  b: 60 },
-			{ y: '2009', a: 75,  b: 65 },
-			{ y: '2010', a: 50,  b: 70 },
-			{ y: '2011', a: 80,  b: 85 },
-			{ y: '2012', a: 100, b: 90 }
-		],
-		xkey: 'y',
-		grid: false,
-		ykeys: ['a', 'b'],
-		labels: ['Item A', 'Item B'],
-		lineColors: ['#8CB4BC', '#538792'],
-		gridTextColor : '#fff'
-	});
-	
-	var barChart = Morris.Bar({
-	  element: 'barChart',
-	  data: [
-		{ y: '2006', a: 100, b: 90 },
-		{ y: '2007', a: 75,  b: 65 },
-		{ y: '2008', a: 50,  b: 40 },
-		{ y: '2009', a: 75,  b: 65 },
-		{ y: '2010', a: 50,  b: 40 },
-		{ y: '2011', a: 75,  b: 65 },
-		{ y: '2012', a: 100, b: 90 }
-	  ],
-	  xkey: 'y',
-	  ykeys: ['a', 'b'],
-	  grid: false,
-	  labels: ['Item C', 'Item D'],
-	  barColors: ['#5EE1B1', '#3BC894'],
-	  gridTextColor : '#fff'
-	});
-
-	//Sparkline
-	$('#visits').sparkline([15,19,20,22,33,27,31,27,19,30,21,10,15,18,25,9], {
-		type: 'bar', 
-		barColor: '#FC8675',	
-		height:'35px',
-		weight:'96px'
-	});
-	$('#balances').sparkline([220,160,189,156,201,220,104,242,221,111,164,242,183,165], {
-		type: 'bar', 
-		barColor: '#65CEA7',	
-		height:'35px',
-		weight:'96px'
-	});
-	
 	//Timeline color box
 	$('.timeline-img').colorbox({
 		rel:'group1',
@@ -181,32 +90,6 @@ $(function	()	{
 		}, 2000);
 		
 		return false;
-	});
-	
-	$(window).resize(function(e)	{
-		
-		//Sparkline
-		$('#visits').sparkline([15,19,20,22,33,27,31,27,19,30,21,10,15,18,25,9], {
-			type: 'bar', 
-			barColor: '#fa4c38',	
-			height:'35px',
-			weight:'96px'
-		});
-		$('#balances').sparkline([220,160,189,156,201,220,104,242,221,111,164,242,183,165], {
-			type: 'bar', 
-			barColor: '#92cf5c',	
-			height:'35px',
-			weight:'96px'
-		});
-
-		//resize morris chart
-		setTimeout(function() {
-			donutChart.redraw();
-			lineChart.redraw();
-			barChart.redraw();			
-			
-			$.plot($('#placeholder'), [init], options);
-		},500);
 	});
 	
 	$(window).load(function(e)	{

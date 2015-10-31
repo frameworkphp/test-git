@@ -53,7 +53,7 @@ class Acl extends Plugin
 
     private function notPermission(Dispatcher $dispatcher)
     {
-        $dispatcher->forward([
+        return $dispatcher->forward([
             'module' => 'site',
             'controller' => 'error',
             'action' => 'show404'
@@ -66,7 +66,7 @@ class Acl extends Plugin
         $this->view->setPartialsDir('');
         $this->view->message = "Acl resource <b>$resource</b> in <b>/app/config/acl.php</b> not exists";
         $this->view->partial('error/show404');
-        $response = new Phalcon\Http\Response();
+        $response = new \Phalcon\Http\Response();
         $response->setHeader(404, 'Not Found');
         $response->sendHeaders();
         echo $response->getContent();

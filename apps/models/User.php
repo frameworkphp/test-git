@@ -2,6 +2,9 @@
 
 namespace Models;
 
+use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
+use Phalcon\Mvc\Model\Query\Builder as Builder;
+
 class User extends BaseModel
 {
     /**
@@ -55,6 +58,8 @@ class User extends BaseModel
      * Declare const
      */
     const STATUS_ACTIVE = 1;
+    const STATUS_DISABLE = 0;
+    const STATUS_BANNED = 2;
 
     /**
      * @var array roles
@@ -63,6 +68,24 @@ class User extends BaseModel
         'member' => 'Member',
         'employee' => 'Employee',
         'admin' => 'Admin',
+    ];
+
+    /**
+     * @var array
+     */
+    public static $statusName = [
+        self::STATUS_ACTIVE => 'Approved',
+        self::STATUS_DISABLE => 'Pending',
+        self::STATUS_BANNED => 'Banned'
+    ];
+
+    /**
+     * @var array
+     */
+    public static $statusLabel = [
+        self::STATUS_ACTIVE => 'label-success',
+        self::STATUS_DISABLE => 'label-warning',
+        self::STATUS_BANNED => 'label-danger'
     ];
 
     public function initialize()
@@ -99,10 +122,107 @@ class User extends BaseModel
         }
     }
 
+    public static function getUserById($id)
+    {
+        return self::findFirst([
+            'conditions' => 'id = :userId:',
+            'bind'       => ['userId' => $id],
+            'cache'      => [
+                'key'      => HOST_HASH . md5(get_class() . '::getUserById::' . $id),
+                'lifetime' => 3600,
+            ]
+        ]);
+    }
+
     public function afterUpdate()
     {
         $cache = $this->getDi()->get('cache');
+        // Delete cache role by id
         $key = HOST_HASH . md5(get_class() . '::getRoleById::' . $this->id);
         $cache->delete($key);
+
+        // Delete cache user by id
+        $key = HOST_HASH . md5(get_class() . '::getUserById::' . $this->id);
+        $cache->delete($key);
     }
+
+    public static function getUsers($parameter = [], $columns = '*', $limit = 30, $offset = 1, $sortBy = '', $sortType = '')
+    {
+        $whereString = '';
+        $bindParams = [];
+        $modelName = get_class();
+
+        // Begin assign keyword to search
+        if (isset($parameter['keyword']) && $parameter['keyword'] != '' && isset($parameter['keywordIn'])
+            && !empty($parameter['keywordIn'])
+        ) {
+            $keyword = $parameter['keyword'];
+            $keywordIn = $parameter['keywordIn'];
+
+            $whereString .= ($whereString != '' ? ' OR ' : ' (');
+            $filter = '';
+            foreach ($keywordIn as $in) {
+                $filter .= ($filter != '' ? ' OR ' : '') . $in . ' LIKE :searchKeyword:';
+            }
+
+            $whereString .= $filter . ')';
+            $bindParams['searchKeyword'] = '%' . $keyword . '%';
+        }
+        unset($parameter['keyword']);
+        unset($parameter['keywordIn']);
+        // End Search
+
+        // Assign name params same MetaData
+        foreach ($parameter as $key => $value) {
+            $whereString .= ($whereString != '' ? ' AND ' : '') . $key . ' = :' . $key . ':';
+            $bindParams[$key] = $value;
+        }
+
+        $conditions = [];
+        if ($whereString != '' && !empty($bindParams)) {
+            $conditions = [[$whereString, $bindParams]];
+        }
+
+        // Check order
+        if ($sortBy == '') {
+            $sortBy = 'id';
+        }
+
+        if (strcasecmp($sortType, 'ASC') != 0 && strcasecmp($sortType, 'DESC') != 0) {
+            $sortType = 'DESC';
+        }
+        $order = $sortBy . ' ' . $sortType;
+
+        $params = [
+            'models' => $modelName,
+            'columns' => $columns,
+            'conditions' => $conditions,
+            'order' => [$modelName . '.' . $order . '']
+        ];
+
+        $builder = new Builder($params);
+        $pagination = new PaginatorQueryBuilder([
+            'builder' => $builder,
+            'limit' => $limit,
+            'page' => $offset
+        ]);
+
+        return $pagination->getPaginate();
+    }
+
+    public function getRoleName()
+    {
+        return self::$roles[$this->role];
+    }
+
+    public function getStatusName()
+    {
+        return self::$statusName[$this->status];
+    }
+
+    public function getStatusLabel()
+    {
+        return self::$statusLabel[$this->status];
+    }
+
 }

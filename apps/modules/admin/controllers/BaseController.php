@@ -9,14 +9,6 @@ class BaseController extends Controller
     public function initialize()
     {
         $this->breadcrumbs();
-        if (!$this->session->get('Auth')) {
-            return $this->dispatcher->forward([
-                'module' => 'admin',
-                'controller' => 'login',
-                'action' => 'index'
-            ]);
-        }
-
         $this->tag->setTitle('Welcome to PHP Framework');
     }
 

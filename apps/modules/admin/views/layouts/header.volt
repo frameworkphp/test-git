@@ -1,6 +1,6 @@
 <div id="top-nav" class="fixed skin-6">
-    <a href="#" class="brand">
-        <span>Endless</span>
+    <a href="{{url('admin')}}" class="brand">
+        <span>Framework</span>
         <span class="text-toggle"> Admin</span>
     </a><!-- /brand -->
     <button type="button" class="navbar-toggle pull-left" id="sidebarToggle">
@@ -25,7 +25,7 @@
                     <a class="clearfix" href="#">
                         <img src="img/user.jpg" alt="User Avatar">
                         <div class="detail">
-                            <strong>John Doe</strong>
+                            <strong>Phan Nguyen</strong>
                             <p class="no-margin">
                                 Lorem ipsum dolor sit amet...
                             </p>
@@ -183,7 +183,7 @@
         </li>
         <li class="profile dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <strong>John Doe</strong>
+                <strong>Phan Nguyen</strong>
                 <span><i class="fa fa-chevron-down"></i></span>
             </a>
             <ul class="dropdown-menu">
@@ -191,8 +191,8 @@
                     <a class="clearfix" href="#">
                         <img src="img/user.jpg" alt="User Avatar">
                         <div class="detail">
-                            <strong>John Doe</strong>
-                            <p class="grey">John_Doe@email.com</p>
+                            <strong>Phan Nguyen</strong>
+                            <p class="grey">phannguyen2020@email.com</p>
                         </div>
                     </a>
                 </li>
@@ -200,7 +200,7 @@
                 <li><a tabindex="-1" href="gallery.html" class="main-link"><i class="fa fa-picture-o fa-lg"></i> Photo Gallery</a></li>
                 <li><a tabindex="-1" href="#" class="theme-setting"><i class="fa fa-cog fa-lg"></i> Setting</a></li>
                 <li class="divider"></li>
-                <li><a tabindex="-1" class="main-link logoutConfirm_open" href="#logoutConfirm"><i class="fa fa-lock fa-lg"></i> Log out</a></li>
+                <li><a tabindex="-1" class="main-link" href="#logoutConfirm"><i class="fa fa-lock fa-lg"></i> Log out</a></li>
             </ul>
         </li>
     </ul>

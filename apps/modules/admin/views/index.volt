@@ -20,16 +20,16 @@
         {{ stylesheet_link('css/admin/pace.css') }}
 
         <!-- Color box -->
-        {{ stylesheet_link('css/admin/colorbox.css') }}
+        <!--{{ stylesheet_link('css/admin/colorbox.css') }}-->
 
         <!-- Morris -->
-        {{ stylesheet_link('css/admin/morris.css') }}
+        <!--{{ stylesheet_link('css/admin/morris.css') }}-->
 
         <!-- Endless -->
         {{ stylesheet_link('css/admin/main.css') }}
         {{ stylesheet_link('css/admin/endless-skin.css') }}
     </head>
-    <body class="overflow-hidden">
+    <body class="">
         <!-- Overlay Div -->
         <div id="overlay" class="transparent"></div>
         <div id="wrapper" class="preload">
@@ -77,20 +77,20 @@
         {{javascript_include('public/js/admin/chosen.jquery.min.js')}}
 
         <!-- Morris -->
-        {{javascript_include('public/js/admin/rapheal.min.js')}}
-        {{javascript_include('public/js/admin/morris.min.js')}}
+        <!--{{javascript_include('public/js/admin/rapheal.min.js')}}-->
+        <!--{{javascript_include('public/js/admin/morris.min.js')}}-->
 
         <!-- Colorbox -->
-        {{javascript_include('public/js/admin/jquery.colorbox.min.js')}}
+        <!--{{javascript_include('public/js/admin/jquery.colorbox.min.js')}}-->
 
         <!-- Sparkline -->
-        {{javascript_include('public/js/admin/jquery.sparkline.min.js')}}
+        <!--{{javascript_include('public/js/admin/jquery.sparkline.min.js')}}-->
 
         <!-- Pace -->
         {{javascript_include('public/js/admin/pace.js')}}
 
         <!-- Popup Overlay -->
-        {{javascript_include('public/js/admin/jquery.popupoverlay.min.js')}}
+        <!--{{javascript_include('public/js/admin/jquery.popupoverlay.min.js')}}-->
 
         <!-- Slimscroll -->
         {{javascript_include('public/js/admin/jquery.slimscroll.min.js')}}

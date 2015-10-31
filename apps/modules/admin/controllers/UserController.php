@@ -17,8 +17,46 @@ use Models\User;
 
 class UserController extends BaseController
 {
+    protected $recordPerPage = 2;
+
     public function indexAction()
     {
+        $page = (int)$this->request->getQuery('page', 'int', 1);
+        $keyword = $this->request->getQuery('keyword', 'string', '');
+        $sortBy = $this->request->getQuery('sortby', 'string', '');
+        $sortType = $this->request->getQuery('sorttype', 'string', '');
+
+        $keywordIn = ['name', 'email'];
+        $parameter = [
+            'keyword' => $keyword,
+            'keywordIn' => $keywordIn
+        ];
+        $users = User::getUsers($parameter, '*', $this->recordPerPage, $page, $sortBy, $sortType);
+
+        $queryUrl = '';
+        if ($keyword != '') {
+            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'keyword=' . $keyword;
+        }
+
+        // Always abort sortBy and sortType
+        $orderUrl = $queryUrl . ($queryUrl == '' ? '?' : '&');
+        if ($sortBy != '') {
+            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'sortby=' . $sortBy;
+        }
+
+        if ($sortType != '') {
+            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'sorttype=' . $sortType;
+        }
+
+        $this->view->setVars([
+            'keyword' => $keyword,
+            'sortBy' => $sortBy,
+            'sortType' => $sortType,
+            'users' => $users,
+            'orderUrl' => $orderUrl,
+            'pagination' => $users,
+            'paginateUrl' => substr($this->router->getRewriteUri(), 1) . $queryUrl . ($queryUrl == '' ? '?' : '&')
+        ]);
     }
 
     public function addAction()

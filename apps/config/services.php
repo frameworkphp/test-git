@@ -48,16 +48,6 @@ $di['loader'] = function () {
 };
 
 /**
- * The URL component is used to generate all kind of urls in the application
- */
-$di['url'] = function () use ($config) {
-    $url = new UrlResolver();
-    $url->setBaseUri($config->baseUri);
-
-    return $url;
-};
-
-/**
  * Start the session the first time some component request the session service
  */
 $di['session'] = function () {
@@ -65,6 +55,16 @@ $di['session'] = function () {
     $session->start();
 
     return $session;
+};
+
+/**
+ * The URL component is used to generate all kind of urls in the application
+ */
+$di['url'] = function () use ($config) {
+    $url = new UrlResolver();
+    $url->setBaseUri($config->baseUri);
+
+    return $url;
 };
 
 /**
@@ -80,6 +80,12 @@ $di['view'] = function () use ($config) {
                 'compiledPath' => $config->application->cacheDir . 'volt/',
                 'compiledSeparator' => '_'
             ));
+
+            $compiler = $volt->getCompiler();
+            $compiler->addFilter('floor', 'floor');
+            $compiler->addFunction('range', 'range');
+            $compiler->addFunction('count', 'count');
+            $compiler->addFunction('unserialize', 'unserialize');
 
             return $volt;
         },

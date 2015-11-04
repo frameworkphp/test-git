@@ -2727,7 +2727,8 @@ footer hr {
 .dropdown-menu li a .detail {
     float: left;
     margin-left: 10px;
-    white-space: normal
+    white-space: normal;
+    width: 128px;
 }
 
 .dropdown-menu li a .detail p {

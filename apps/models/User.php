@@ -58,7 +58,7 @@ class User extends BaseModel
      * Declare const
      */
     const STATUS_ACTIVE = 1;
-    const STATUS_DISABLE = 0;
+    const STATUS_INACTIVE = 0;
     const STATUS_BANNED = 2;
 
     /**
@@ -67,7 +67,7 @@ class User extends BaseModel
     public static $roles = [
         'member' => 'Member',
         'employee' => 'Employee',
-        'admin' => 'Admin',
+        'admin' => 'Administrator',
     ];
 
     /**
@@ -75,7 +75,7 @@ class User extends BaseModel
      */
     public static $statusName = [
         self::STATUS_ACTIVE => 'Approved',
-        self::STATUS_DISABLE => 'Pending',
+        self::STATUS_INACTIVE => 'Pending',
         self::STATUS_BANNED => 'Banned'
     ];
 
@@ -84,7 +84,7 @@ class User extends BaseModel
      */
     public static $statusLabel = [
         self::STATUS_ACTIVE => 'label-success',
-        self::STATUS_DISABLE => 'label-warning',
+        self::STATUS_INACTIVE => 'label-warning',
         self::STATUS_BANNED => 'label-danger'
     ];
 
@@ -101,6 +101,17 @@ class User extends BaseModel
     public function beforeUpdate()
     {
         $this->dateModified = time();
+    }
+
+    public function getAuthData()
+    {
+        $authData = new \stdClass();
+        $authData->id = $this->id;
+        $authData->email = $this->email;
+        $authData->name = $this->name;
+        $authData->role = $this->getRoleName();
+        $authData->gender = $this->gender;
+        return $authData;
     }
 
     public static function getRoleById($id)
@@ -224,5 +235,4 @@ class User extends BaseModel
     {
         return self::$statusLabel[$this->status];
     }
-
 }

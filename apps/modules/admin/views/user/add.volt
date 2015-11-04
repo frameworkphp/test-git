@@ -68,8 +68,10 @@
                         </div><!-- /form-group -->
 
                     </div>
-                    <div class="panel-footer">
-                        <button type="submit" class="btn btn-success">Submit</button>
+                    <div class="panel-footer clearfix">
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
                     </div>
                     <input type="hidden" name="{{ security.getTokenKey() }}" value="{{ security.getToken() }}">
                 </form>

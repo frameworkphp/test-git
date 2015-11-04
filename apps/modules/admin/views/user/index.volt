@@ -11,13 +11,15 @@
                     </div>
                 </div>
                 <div class="panel-body">
-                    <div class="input-group pull-right">
-                        <input type="text" class="form-control input-sm" value="{{keyword}}" placeholder="search user by name, email..." aria-controls="dataTable"><span
-                            class="input-group-btn">
-                    <button class="btn btn-default btn-sm" type="button">
-                        <i class="fa fa-search"></i>
-                    </button></span>
-                    </div>
+                    <form method="get">
+                        <div class="input-group pull-right">
+                            <input type="text" name="keyword" class="form-control input-sm" value="{{keyword}}" placeholder="search user by name, email..." aria-controls="dataTable"><span
+                                class="input-group-btn">
+                            <button class="btn btn-default btn-sm" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button></span>
+                        </div>
+                    </form>
                 </div>
                     <table class="table table-striped" id="responsiveTable">
                         <thead>
@@ -30,10 +32,14 @@
                             </th>
                             <th>ID</th>
                             <th class="{% if sortBy == 'name' %}sorted{% else %}sortable{% endif %}">
-                                <a href="{{url('admin/user')}}{{orderUrl}}sortby=name&{% if sortBy == 'name' and sortType|lower == 'asc' %}sorttype=desc{% else %}sorttype=asc{% endif %}{% if pagination.current > 1 %}&page={{pagination.current}}{% endif %}">Name {% if sortBy == 'name' and sortType|lower == 'asc' %}<i class="fa fa-caret-down"></i>{% else %}<i class="fa fa-caret-up"></i>{% endif %}</a>
+                                <a href="{{url(orderUrl)}}sortby=name&{% if sortBy == 'name' and sortType|lower == 'asc' %}sorttype=desc{% else %}sorttype=asc{% endif %}{% if pagination.current > 1 %}&page={{pagination.current}}{% endif %}">
+                                    Name {% if sortBy == 'name' and sortType|lower == 'asc' %}<i class="fa fa-caret-down"></i>{% else %}<i class="fa fa-caret-up"></i>{% endif %}
+                                </a>
                             </th>
                             <th class="{% if sortBy == 'email' %}sorted{% else %}sortable{% endif %}">
-                                <a href="{{url('admin/user')}}{{orderUrl}}sortby=email&{% if sortBy == 'email' and sortType|lower == 'asc' %}sorttype=desc{% else %}sorttype=asc{% endif %}{% if pagination.current > 1 %}&page={{pagination.current}}{% endif %}">Email {% if sortBy == 'email' and sortType|lower == 'asc' %}<i class="fa fa-caret-down"></i>{% else %}<i class="fa fa-caret-up"></i>{% endif %}</a>
+                                <a href="{{url(orderUrl)}}sortby=email&{% if sortBy == 'email' and sortType|lower == 'asc' %}sorttype=desc{% else %}sorttype=asc{% endif %}{% if pagination.current > 1 %}&page={{pagination.current}}{% endif %}">
+                                    Email {% if sortBy == 'email' and sortType|lower == 'asc' %}<i class="fa fa-caret-down"></i>{% else %}<i class="fa fa-caret-up"></i>{% endif %}
+                                </a>
                             </th>
                             <th>Role</th>
                             <th>Status</th>

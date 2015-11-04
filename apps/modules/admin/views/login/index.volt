@@ -32,21 +32,21 @@
                 <form id="formValidate1" action="" method="post" class="form-login" data-parsley-validate>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="text" placeholder="Email" name="femail" value="{{formData['femail']}}"
+                        <input type="text" placeholder="Email" name="email" value="{{formData['email']}}"
                                class="form-control input-sm bounceIn animation-delay2" data-required="true" data-type="email">
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" placeholder="Password" name="fpassword"
+                        <input type="password" placeholder="Password" name="password"
                                class="form-control input-sm bounceIn animation-delay4" data-required="true" data-minlength="6">
                     </div>
                     <div class="form-group">
                         <label class="label-checkbox inline">
-                            <input type="checkbox" name="fremember" class="regular-checkbox chk-delete"/>
+                            <input type="checkbox" name="remember" class="regular-checkbox chk-delete"/>
                             <span class="custom-checkbox info bounceIn animation-delay4"></span>
-
+                            Remember me
                         </label>
-                        Remember me
+
                     </div>
 
                     <div class="seperator"></div>

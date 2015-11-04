@@ -183,7 +183,7 @@
         </li>
         <li class="profile dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <strong>Phan Nguyen</strong>
+                <strong>{{ auth.getName() }}</strong>
                 <span><i class="fa fa-chevron-down"></i></span>
             </a>
             <ul class="dropdown-menu">
@@ -191,8 +191,8 @@
                     <a class="clearfix" href="#">
                         <img src="img/user.jpg" alt="User Avatar">
                         <div class="detail">
-                            <strong>Phan Nguyen</strong>
-                            <p class="grey">phannguyen2020@email.com</p>
+                            <strong>{{ auth.getName() }}</strong>
+                            <p class="grey">{{ auth.getEmail() }}</p>
                         </div>
                     </a>
                 </li>

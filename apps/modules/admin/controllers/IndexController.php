@@ -16,7 +16,7 @@ class IndexController extends BaseController
 
     public function logoutAction()
     {
-        $this->session->destroy();
+        $this->auth->remove();
         $this->response->redirect('admin');
     }
 }

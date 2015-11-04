@@ -14,38 +14,31 @@ use Phalcon\Mvc\Controller;
 
 class LoginController extends Controller
 {
+    public function initialize()
+    {
+        if ($this->auth->getId() > 0 ) {
+            $this->response->redirect('admin');
+        }
+    }
+
     public function indexAction()
     {
         $formData = array();
         if ($this->request->isPost()) {
             if ($this->security->checkToken()) {
                 $formData = $this->request->getPost();
-                $users = User::findFirstByEmail($formData['femail']);
-                if ($users) {
-                    if ($this->security->checkHash($formData['fpassword'], $users->password)) {
-                        // create session for user
-                        $this->session->set('Auth', $users);
+                try {
+                    // Authentication user login
+                    $this->auth->authentication($formData);
 
-                        // Handel write log
-                        $infoLog = [
-                            'user_id' => $users->id,
-                            'email' => $users->email,
-                            'user_agent' => $this->request->getUserAgent(),
-                            'ip_address' => $this->request->getClientAddress()
-                        ];
-                        Logs::log('Login', serialize($infoLog), Logs::INFO);
-
-                        $redirect = $this->dispatcher->getParam('redirect');
-                        if ($redirect != '') {
-                            $this->response->redirect($redirect);
-                        } else {
-                            $this->response->redirect('admin');
-                        }
+                    $redirect = $this->dispatcher->getParam('redirect');
+                    if ($redirect != '') {
+                        $this->response->redirect($redirect);
                     } else {
-                        $this->flash->error('<strong>Oh snap!</strong> Password not match.');
+                        $this->response->redirect('admin');
                     }
-                } else {
-                    $this->flash->error('<strong>Oh snap!</strong> Email not exists.');
+                } catch (\Exception $e) {
+                    $this->flash->error('<strong>Oh snap!</strong> ' . $e->getMessage());
                 }
             }
         }

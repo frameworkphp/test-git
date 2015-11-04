@@ -13,16 +13,13 @@
         <div class="user-block clearfix">
             <img src="img/user.jpg" alt="User Avatar">
             <div class="detail">
-                <strong>Phan Nguyen</strong><span class="badge badge-danger m-left-xs bounceIn animation-delay4">4</span>
-                <ul class="list-inline">
-                    <li><a href="{{url('admin/user/profile')}}">Profile</a></li>
-                    <li><a href="{{url('admin/inbox')}}" class="no-margin">Inbox</a></li>
-                </ul>
+                <strong>{{ auth.getName() }}</strong><span class="badge badge-danger m-left-xs bounceIn animation-delay4">4</span>
+                <p>{{ auth.getRole() }}</p>
             </div>
         </div><!-- /user-block -->
         <div class="main-menu">
             <ul>
-                <li class="active">
+                <li class="{% if dispatcher.getControllerName() == 'index' %}active{% endif %}">
                     <a href="{{url('admin')}}">
 								<span class="menu-icon">
 									<i class="fa fa-desktop fa-lg"></i>
@@ -33,7 +30,7 @@
                         <span class="menu-hover"></span>
                     </a>
                 </li>
-                <li>
+                <li class="{% if dispatcher.getControllerName() == 'user' %}active{% endif %}">
                     <a href="{{url('admin/user')}}">
 								<span class="menu-icon">
 									<i class="fa fa-user fa-lg"></i>
@@ -42,7 +39,7 @@
                         <span class="menu-hover"></span>
                     </a>
                 </li>
-                <li class="openable open">
+                <li class="openable open {% if dispatcher.getControllerName() == 'page' %}active{% endif %}">
                     <a href="{{url('admin/page')}}">
 								<span class="menu-icon">
 									<i class="fa fa-file-text fa-lg"></i>

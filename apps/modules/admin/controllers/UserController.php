@@ -26,6 +26,7 @@ class UserController extends BaseController
         $sortBy = $this->request->getQuery('sortby', 'string', '');
         $sortType = $this->request->getQuery('sorttype', 'string', '');
 
+        $currentUrl = substr($this->router->getRewriteUri(), 1);
         $keywordIn = ['name', 'email'];
         $parameter = [
             'keyword' => $keyword,
@@ -39,7 +40,7 @@ class UserController extends BaseController
         }
 
         // Always abort sortBy and sortType
-        $orderUrl = $queryUrl . ($queryUrl == '' ? '?' : '&');
+        $orderUrl = $currentUrl . $queryUrl . ($queryUrl == '' ? '?' : '&');
         if ($sortBy != '') {
             $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'sortby=' . $sortBy;
         }
@@ -48,6 +49,8 @@ class UserController extends BaseController
             $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'sorttype=' . $sortType;
         }
 
+        $paginateUrl = $currentUrl . $queryUrl . ($queryUrl == '' ? '?' : '&');
+
         $this->view->setVars([
             'keyword' => $keyword,
             'sortBy' => $sortBy,
@@ -55,7 +58,7 @@ class UserController extends BaseController
             'users' => $users,
             'orderUrl' => $orderUrl,
             'pagination' => $users,
-            'paginateUrl' => substr($this->router->getRewriteUri(), 1) . $queryUrl . ($queryUrl == '' ? '?' : '&')
+            'paginateUrl' => $paginateUrl
         ]);
     }
 
@@ -77,12 +80,12 @@ class UserController extends BaseController
                         $userModel->role = $formData['role'];
 
                         if ($userModel->create()) {
-                            $this->flash->success('<strong>Well done!</strong> Add user successfully');
+                            $this->flash->success('Add user successfully');
                         } else {
                             $error = $userModel->getMessages();
                         }
                     } else {
-                        $error[] = '<strong>Oh snap!</strong> User already exists.';
+                        $error[] = 'User already exists.';
                     }
                 }
             }

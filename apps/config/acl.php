@@ -38,7 +38,8 @@ return [
         ],
         'Admin' => [
             'index' => '*',
-            'user' => '*'
+            'user' => '*',
+            'login' => '*'
         ]
     ]
 ];

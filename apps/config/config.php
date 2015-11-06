@@ -1,6 +1,6 @@
 <?php
 return [
-    'baseUri' => 'http://framework.com/',
+    'baseUri' => 'http://new.first.com/',
     'database' => [
         'adapter' => 'Mysql',
         'host' => 'localhost',
@@ -18,5 +18,21 @@ return [
         'host' => 'localhost',
         'port' => 11211,
     ],
-    'cache' => 'file'
+    'cache' => 'file',
+    'uploadPath' => 'public/uploads',
+    'media' => [
+        'user' => [
+            'imagePath' => 'public/uploads/user',
+            'imageResourceHost' => '',
+            'imageMaxWidth' => 640,
+            'imageMaxHeight' => 640,
+            'imageMediumWidth' => 200,
+            'imageMediumHeight' => 200,
+            'imageThumbWidth' => 50,
+            'imageThumbHeight' => 50,
+            'imageMinSize' => 1000,
+            'imageMaxSize' => 5242880,
+            'imageQuality' => 95
+        ]
+    ]
 ];

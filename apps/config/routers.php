@@ -30,6 +30,12 @@ $router->add('/admin/:controller', array(
     'controller' => 1
 ));
 
+$router->add('/admin/logout', array(
+    'module' => 'admin',
+    'controller' => 'index',
+    'action' => 'logout'
+));
+
 //$router->setUriSource(\Phalcon\Mvc\Router::URI_SOURCE_SERVER_REQUEST_URI);
 
 $router->removeExtraSlashes(true);

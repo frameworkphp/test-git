@@ -3,22 +3,25 @@
  * Services are globally registered in this file
  */
 
+use Annotations\AnnotationsInitializer;
+use Annotations\AnnotationsMetaDataInitializer;
+use Library\Acl as Acl;
+use Library\Auth as Auth;
+use Phalcon\Annotations\Adapter\Files as AnnotationsAdapter;
 use Phalcon\Config;
-use Phalcon\Mvc\View;
-use Phalcon\Mvc\Router;
-use Phalcon\Mvc\Dispatcher;
-use Phalcon\DI\FactoryDefault;
-use Phalcon\Mvc\Url as UrlResolver;
-use Phalcon\Events\Manager as EventsManager;
-use Phalcon\Mvc\Model\Manager as ModelsManager;
+use Phalcon\Crypt;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
+use Phalcon\DI\FactoryDefault;
+use Phalcon\Events\Manager as EventsManager;
+use Phalcon\Http\Response\Cookies;
+use Phalcon\Mvc\Dispatcher;
+use Phalcon\Mvc\Model\Manager as ModelsManager;
+use Phalcon\Mvc\Model\Metadata\Files as MetaDataAdapter;
+use Phalcon\Mvc\Router;
+use Phalcon\Mvc\Url as UrlResolver;
+use Phalcon\Mvc\View;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
-use Phalcon\Mvc\Model\Metadata\Files as MetaDataAdapter;
-use Phalcon\Annotations\Adapter\Files as AnnotationsAdapter;
-use Annotations\AnnotationsMetaDataInitializer;
-use Annotations\AnnotationsInitializer;
-use Library\Acl as Acl;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -215,3 +218,32 @@ $di['modelsCache'] = function () use ($config) {
 
     return $cache;
 };
+
+$di['cache'] = function () use ($di) {
+    return $di->get('modelsCache');
+};
+
+/**
+ * Access Control List
+ */
+$di['auth'] = function () {
+    return new Auth();
+};
+
+/**
+ * Init cookie
+ */
+$di->set('cookies', function () {
+    $cookies = new Cookies();
+    $cookies->useEncryption(true);
+
+    return $cookies;
+});
+
+$di->set('crypt', function () {
+    $crypt = new Crypt();
+    $crypt->setMode(MCRYPT_MODE_CFB);
+    $crypt->setKey('#1Pdj8$=dp?.ak//nHj1V$');
+
+    return $crypt;
+});

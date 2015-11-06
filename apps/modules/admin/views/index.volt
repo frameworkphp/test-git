@@ -31,7 +31,7 @@
     </head>
     <body class="">
         <!-- Overlay Div -->
-        <div id="overlay" class="transparent"></div>
+        <!--<div id="overlay" class="transparent"></div>-->
         <div id="wrapper" class="preload">
             {% include "layouts/header.volt" %}
             {% include "layouts/sidebar.volt" %}

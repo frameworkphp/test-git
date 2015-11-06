@@ -64,34 +64,22 @@ class UserController extends BaseController
 
     public function addAction()
     {
-        $error = [];
         $formData = [];
         if ($this->request->isPost()) {
             if ($this->security->checkToken()) {
                 $formData = $this->request->getPost();
-                if ($this->addUserValidator($formData, $error)) {
-                    $myUser = User::findFirstByEmail($formData['email']);
-                    if (!$myUser) {
-                        $userModel = new User();
-                        $userModel->name = $formData['name'];
-                        $userModel->email = $formData['email'];
-                        $userModel->password = $this->security->hash($formData['password']);
-                        $userModel->gender = $formData['gender'];
-                        $userModel->role = $formData['role'];
+                $userModel = new User();
+                $userModel->name = $formData['name'];
+                $userModel->email = $formData['email'];
+                $userModel->password = $this->security->hash($formData['password']);
+                $userModel->gender = $formData['gender'];
+                $userModel->role = $formData['role'];
 
-                        if ($userModel->create()) {
-                            $this->flash->success('Add user successfully');
-                        } else {
-                            $error = $userModel->getMessages();
-                        }
-                    } else {
-                        $error[] = 'User already exists.';
-                    }
+                if ($userModel->create()) {
+                    $this->flash->success('Add user successfully');
+                } else {
+                    $this->flash->outputMessage('error',  $userModel->getMessages());
                 }
-            }
-
-            if (!empty($error)) {
-                $this->flash->outputMessage('error', $error);
             }
         }
 
@@ -101,20 +89,28 @@ class UserController extends BaseController
         ]);
     }
 
-    public function addUserValidator($formData, &$error)
+    public function editAction($id)
     {
-        $pass = true;
+        $user = User::getUserById($id);
 
-        if ($formData['name'] == '') {
-            $error[] = 'Name is required';
-            $pass = false;
+        if ($this->request->isPost()) {
+            $formData = $this->request->getPost();
+
+            $user->name = $formData['name'];
+            $user->email = $formData['email'];
+            $user->gender = $formData['gender'];
+            $user->role = $formData['role'];
+
+            if ($user->update()) {
+                $this->flash->success('Update user successfully');
+            } else {
+                $this->flash->outputMessage('error', $user->getMessages());
+            }
         }
 
-        if ($formData['email'] == '') {
-            $error[] = 'Email is required';
-            $pass = false;
-        }
-
-        return $pass;
+        $this->view->setVars([
+            'user' => $user,
+            'roles' => User::$roles
+        ]);
     }
 }

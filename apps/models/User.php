@@ -2,8 +2,10 @@
 
 namespace Models;
 
-use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
+use Phalcon\Behavior\Imageable;
 use Phalcon\Mvc\Model\Query\Builder as Builder;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
 
 class User extends BaseModel
 {
@@ -38,6 +40,11 @@ class User extends BaseModel
      * @Column(type="string", length=200, nullable=false, column="gender")
      */
     public $gender = 'male';
+
+    /**
+     * @Column(type="string", length=200, nullable=true, column="avatar")
+     */
+    public $avatar = '';
 
     /**
      * @Column(type="integer", length=1, nullable=false, column="status")
@@ -91,6 +98,20 @@ class User extends BaseModel
     public function initialize()
     {
         $this->setSource(TABLE_PREFIX . 'user');
+
+        $config = $this->getDI()->get('config');
+        $uploadPath = rtrim($config->media->user->imagePath, '/\\');
+
+        $this->addBehavior(new Imageable([
+            'beforeCreate' => [
+                'field' => 'avatar',
+                'uploadPath' => $uploadPath,
+            ],
+            'beforeUpdate' => [
+                'field' => 'avatar',
+                'uploadPath' => $uploadPath,
+            ],
+        ]));
     }
 
     public function beforeCreate()
@@ -101,6 +122,21 @@ class User extends BaseModel
     public function beforeUpdate()
     {
         $this->dateModified = time();
+    }
+
+    /**
+     * Validate that emails are unique across users
+     *
+     * @return boolean
+     */
+    public function validation()
+    {
+        $this->validate(new Uniqueness([
+            'field' => 'email',
+            'message' => 'Email already exists.'
+        ]));
+
+        return !$this->validationHasFailed();
     }
 
     public function getAuthData()
@@ -116,30 +152,20 @@ class User extends BaseModel
 
     public static function getRoleById($id)
     {
-        $role = self::findFirst([
-            'conditions' => 'id = :userId:',
-            'bind'       => ['userId' => $id],
-            'columns'    => ['role'],
-            'cache'      => [
-                'key'      => HOST_HASH . md5(get_class() . '::getRoleById::' . $id),
-                'lifetime' => 3600,
-            ]
-        ]);
-
-        if ($role) {
-            return $role->role;
-        } else {
-            return 'guest';
+        $user = self::getUserById($id);
+        if ($user) {
+            return $user->role;
         }
+        return false;
     }
 
     public static function getUserById($id)
     {
         return self::findFirst([
             'conditions' => 'id = :userId:',
-            'bind'       => ['userId' => $id],
-            'cache'      => [
-                'key'      => HOST_HASH . md5(get_class() . '::getUserById::' . $id),
+            'bind' => ['userId' => $id],
+            'cache' => [
+                'key' => HOST_HASH . md5(get_class() . '::getUserById::' . $id),
                 'lifetime' => 3600,
             ]
         ]);
@@ -148,10 +174,6 @@ class User extends BaseModel
     public function afterUpdate()
     {
         $cache = $this->getDi()->get('cache');
-        // Delete cache role by id
-        $key = HOST_HASH . md5(get_class() . '::getRoleById::' . $this->id);
-        $cache->delete($key);
-
         // Delete cache user by id
         $key = HOST_HASH . md5(get_class() . '::getUserById::' . $this->id);
         $cache->delete($key);
@@ -234,5 +256,11 @@ class User extends BaseModel
     public function getStatusLabel()
     {
         return self::$statusLabel[$this->status];
+    }
+
+    public function getAvatar()
+    {
+        $config = $this->getDI()->get('config');
+        return $config->baseUri . rtrim($config->media->user->imagePath, '/\\') . '/' . $this->avatar;
     }
 }

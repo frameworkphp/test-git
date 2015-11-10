@@ -321,7 +321,7 @@
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
     background: 0 0;
-    padding: 5px 10px;
+    padding: 9px 20px;
     border-bottom: 1px solid #eee;
     margin-bottom: 0;
     font-size: 13px;
@@ -329,7 +329,8 @@
     box-shadow: 0 1px 0 #fff;
     -moz-box-shadow: 0 1px 0 #fff;
     -webkit-box-shadow: 0 1px 0 #fff;
-    text-shadow: 0 1px #fff
+    text-shadow: 0 1px #fff;
+    height: 45px;
 }
 
 .breadcrumb li {
@@ -1051,7 +1052,7 @@ hr {
 }
 
 a {
-    color: #555;
+    /*color: #555;*/
     transition: all .2s ease;
     -webkit-transition: all .2s ease;
     -moz-transition: all .2s ease;
@@ -1087,7 +1088,7 @@ a:focus, a:hover {
 }
 
 .pagination.pagination-xs > li > a, .pagination.pagination-xs > li > span {
-    padding: 2px 7px
+    padding: 4px 10px;
 }
 
 .pagination.pagination-split li {
@@ -2969,7 +2970,7 @@ footer hr {
 }
 
 .panel.panel-default .panel-title {
-    margin: 2px 0px;
+    margin: 6px 0px;
     font-size: 15px;
 }
 
@@ -2986,7 +2987,6 @@ footer hr {
     background: #fff;
     color: #777;
     border-color: #f1f5fc;
-    height: 43px;
 }
 
 .panel.panel-default .panel-title a {
@@ -3558,15 +3558,26 @@ footer hr {
 }
 
 .table th.sortable .fa {
-    display: none;
+    color: transparent;
 }
 
 .table th.sortable a:hover .fa {
-    display: inherit;
+    color: #999;
+}
+
+.table th.sorted a:hover .fa-caret-up:before {
+    color: #999;
+    content: "\f0d7";
+}
+
+.table th.sorted a:hover .fa-caret-down:before {
+    color: #999;
+    content: "\f0d8";
 }
 
 .table-striped {
     border-collapse: inherit;
+    margin: 0 auto;
 }
 
 .table.table-vertical-center td, .table.table-vertical-center th {
@@ -3591,7 +3602,13 @@ footer hr {
 }
 
 .table tbody > tr > td {
-    border-color: #eee
+    border-color: #eee;
+    padding: 12px 15px;
+}
+
+.table>thead>tr>th {
+    padding: 12px 15px;
+    font-size: 13px;
 }
 
 table td.text-center, table th.text-center {
@@ -3674,6 +3691,11 @@ form.form-border .form-group:first-child {
 form.form-border .form-group:last-child {
     padding-bottom: 0;
     border-bottom: none
+}
+
+.form-filter {
+    padding: 0px;
+    margin-right: 10px;
 }
 
 .input-icon input[type=text] {
@@ -6836,6 +6858,26 @@ input[type=radio]:active + .custom-radio {
     -moz-animation-fill-mode: both;
     -ms-animation-fill-mode: both;
     -o-animation-fill-mode: both
+}
+
+.table-no-record {
+    text-align: center;
+    color: #ccc;
+    margin: 20px 0px;
+}
+
+.table-no-record .fa {
+    font-size: 250px;
+}
+
+.table-no-record p {
+    font-size: 20px;
+}
+
+.pagination-showing {
+    float: left;
+    margin-right: 10px;
+    padding: 5px 0;
 }
 
 @-moz-keyframes bounce_followingBallsG {

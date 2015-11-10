@@ -15,7 +15,7 @@ define('HOST_HASH', substr(md5($_SERVER['HTTP_HOST']), 0, 12));
     /**
      * Autoload composer
      */
-    // require ROOT_URL . '/vendor/autoload.php';
+    require ROOT_URL . '/vendor/autoload.php';
 
     /**
      * Include services

@@ -4,7 +4,8 @@
  * Imageable.php 04/11/2015
  * ----------------------------------------------
  *
- * @author      Phan Nguyen <phannguyen2020@gmail.com>
+ * @author      Phalcon
+ * @customize   Phan Nguyen <phannguyen2020@gmail.com>
  * @copyright   Copyright (c) 2015, framework
  *
  * ----------------------------------------------
@@ -13,6 +14,7 @@
  */
 namespace Phalcon\Behavior;
 
+use Phalcon\Http\Request\File;
 use Phalcon\Logger;
 use Phalcon\Mvc\Model\Behavior;
 use Phalcon\Mvc\Model\BehaviorInterface;
@@ -53,10 +55,23 @@ class Imageable extends Behavior implements BehaviorInterface
     protected $filesystem = null;
 
     /**
+     * Allow min size
+     * @var int
+     */
+    protected $allowMinSize = null;
+
+    /**
+     * Allow max size
+     * @var int
+     */
+    protected $allowMaxSize = null;
+
+    /**
      * Allowed types
      * @var array
      */
     protected $allowedFormats = ['image/jpeg', 'image/png', 'image/gif'];
+
 
     public function notify($eventType, ModelInterface $model)
     {
@@ -76,6 +91,8 @@ class Imageable extends Behavior implements BehaviorInterface
 
             $this->setImageField($options, $model)
                 ->setAllowedFormats($options)
+                ->setAllowedMinSize($options)
+                ->setAllowedMaxSize($options)
                 ->setUploadPath($options)
                 ->processUpload($model);
         }
@@ -97,6 +114,24 @@ class Imageable extends Behavior implements BehaviorInterface
     {
         if (isset($options['allowedFormats']) && is_array($options['allowedFormats'])) {
             $this->allowedFormats = $options['allowedFormats'];
+        }
+
+        return $this;
+    }
+
+    protected function setAllowedMinSize(array $options)
+    {
+        if (isset($options['allowedMinSize']) && is_numeric($options['allowedMinSize'])) {
+            $this->allowMinSize = $options['allowedMinSize'];
+        }
+
+        return $this;
+    }
+
+    protected function setAllowedMaxSize(array $options)
+    {
+        if (isset($options['allowedMaxSize']) && is_numeric($options['allowedMaxSize'])) {
+            $this->allowMaxSize = $options['allowedMaxSize'];
         }
 
         return $this;
@@ -125,12 +160,27 @@ class Imageable extends Behavior implements BehaviorInterface
 
         if (true == $request->hasFiles(true)) {
             foreach ($request->getUploadedFiles() as $file) {
-                // NOTE!!!
-                // Nothing was validated here!
-                // Any validations must be are made in a appropriate validator
                 $key = $file->getKey();
                 $type = $file->getType();
-                if ($key != $this->imageField || !in_array($type, $this->allowedFormats)) {
+
+                // Check extension allowed
+                if (!in_array($type, $this->allowedFormats)) {
+                    throw new \Exception(sprintf('File %s has invalid extension. Allowable only: %s',
+                        $file->getName(), str_replace('image/', ' ', implode(',', $this->allowedFormats))));
+                }
+
+                // Check allowed min size
+                $this->checkMinSize($file, $this->allowMinSize);
+
+                // Check allowed max size
+                $this->checkMaxsize($file, $this->allowMaxSize);
+
+                // Check upload directory
+                if (is_writable($this->uploadPath) === false) {
+                    throw new \Exception(sprintf('The specified directory %s is not writable', $this->uploadPath));
+                }
+
+                if ($key != $this->imageField) {
                     continue;
                 }
 
@@ -162,6 +212,41 @@ class Imageable extends Behavior implements BehaviorInterface
         }
     }
 
+
+    /**
+     * Check minimum file size
+     *
+     * @param File $file
+     * @param $value
+     * @return bool
+     * @throws \Exception
+     */
+    public function checkMinSize(File $file, $value)
+    {
+        if ($file->getSize() < (int) $value && $value !== null) {
+            throw new \Exception(sprintf('The %s file is small. The minimum allowable %s',
+                $file->getName(), $this->bytes($value)));
+        }
+        return true;
+    }
+
+    /**
+     * Check maximum file size
+     *
+     * @param File $file
+     * @param $value
+     * @return bool
+     * @throws \Exception
+     */
+    public function checkMaxsize(File $file, $value)
+    {
+        if ($file->getSize() > (int) $value && $value !== null) {
+            throw new \Exception(sprintf('The %s file is big. The maximum allowable %s',
+                $file->getName(), $this->bytes($value)));
+        }
+        return true;
+    }
+
     protected function curDateDir($includeDay = true)
     {
         $dateArr = getdate();
@@ -174,4 +259,19 @@ class Imageable extends Behavior implements BehaviorInterface
 
         return $path;
     }
+
+    /**
+     * Format byte code to human understand
+     *
+     * @param int $bytes number of bytes
+     * @param int $precision after comma numbers
+     * @return string
+     */
+    public function bytes($bytes, $precision = 2)
+    {
+        $size = array('bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb');
+        $factor = floor((strlen($bytes) - 1) / 3);
+        return sprintf("%.{$precision}f", $bytes / pow(1024, $factor)) . ' ' . @$size[$factor];
+    }
+
 }

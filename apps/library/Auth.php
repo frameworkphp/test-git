@@ -70,6 +70,16 @@ class Auth extends Component
     }
 
     /**
+     * Return the current avatar identity
+     *
+     * @return string
+     */
+    public function getAvatar()
+    {
+        return $this->getIdentity()->avatar;
+    }
+
+    /**
      * Authentication for login
      *
      * @param $credentials

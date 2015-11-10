@@ -1,6 +1,7 @@
 <?php
 return [
     'baseUri' => 'http://new.first.com/',
+    'appName' => 'Welcome to PHP Framework',
     'database' => [
         'adapter' => 'Mysql',
         'host' => 'localhost',
@@ -31,7 +32,7 @@ return [
             'imageThumbWidth' => 50,
             'imageThumbHeight' => 50,
             'imageMinSize' => 1000,
-            'imageMaxSize' => 5242880,
+            'imageMaxSize' => 1242880,
             'imageQuality' => 95
         ]
     ]

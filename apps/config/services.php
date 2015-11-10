@@ -177,11 +177,23 @@ $di['db'] = function () use ($config) {
  * Register the flash service with custom CSS classes
  */
 $di['flash'] = function () {
-    $flash = new Phalcon\Flash\Direct(array(
+    $flash = new Phalcon\Flash\Direct([
         'error' => 'alert alert-danger',
         'success' => 'alert alert-success',
         'notice' => 'alert alert-info',
-    ));
+    ]);
+    return $flash;
+};
+
+/**
+ * Register the flash service with custom CSS classes
+ */
+$di['flashSession'] = function () {
+    $flash = new Phalcon\Flash\Session([
+        'error' => 'alert alert-danger',
+        'success' => 'alert alert-success',
+        'notice' => 'alert alert-info',
+    ]);
     return $flash;
 };
 

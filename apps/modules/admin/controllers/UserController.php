@@ -17,30 +17,49 @@ use Models\User;
 
 class UserController extends BaseController
 {
-    protected $recordPerPage = 2;
+    protected $recordPerPage = 10;
 
     public function indexAction()
     {
         $page = (int)$this->request->getQuery('page', 'int', 1);
-        $keyword = $this->request->getQuery('keyword', 'string', '');
+        $keyword = $this->request->getQuery('q', 'string', '');
         $sortBy = $this->request->getQuery('sortby', 'string', '');
         $sortType = $this->request->getQuery('sorttype', 'string', '');
 
+        // Create url dynamic
         $currentUrl = substr($this->router->getRewriteUri(), 1);
+        $queryUrl = '';
+        if ($keyword != '') {
+            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'q=' . $keyword;
+        }
+
+        // Add keyword parameter
         $keywordIn = ['name', 'email'];
         $parameter = [
             'keyword' => $keyword,
             'keywordIn' => $keywordIn
         ];
-        $users = User::getUsers($parameter, '*', $this->recordPerPage, $page, $sortBy, $sortType);
 
-        $queryUrl = '';
-        if ($keyword != '') {
-            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'keyword=' . $keyword;
+        // Get and add filter in parameter
+        $role = $this->request->getQuery('role', 'string', '');
+        $status = $this->request->getQuery('status', 'int', '');
+
+        if ($role != '') {
+            $parameter['role'] = $role;
+            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'role=' . $role;
         }
+
+        if ($status != '') {
+            $parameter['status'] = $status;
+            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'status=' . $status;
+        }
+
+        // Get list users
+        $users = User::getUsers($parameter, '*', $this->recordPerPage, $page, $sortBy, $sortType);
 
         // Always abort sortBy and sortType
         $orderUrl = $currentUrl . $queryUrl . ($queryUrl == '' ? '?' : '&');
+
         if ($sortBy != '') {
             $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'sortby=' . $sortBy;
         }
@@ -52,14 +71,17 @@ class UserController extends BaseController
         $paginateUrl = $currentUrl . $queryUrl . ($queryUrl == '' ? '?' : '&');
 
         $this->view->setVars([
-            'keyword' => $keyword,
+            'parameter' => $parameter,
             'sortBy' => $sortBy,
             'sortType' => $sortType,
             'users' => $users,
             'orderUrl' => $orderUrl,
             'pagination' => $users,
-            'paginateUrl' => $paginateUrl
+            'paginateUrl' => $paginateUrl,
+            'roles' => User::$roles,
+            'status' => User::$statusName
         ]);
+        $this->tag->prependTitle('Manager user');
     }
 
     public function addAction()
@@ -74,8 +96,10 @@ class UserController extends BaseController
                 $userModel->password = $this->security->hash($formData['password']);
                 $userModel->gender = $formData['gender'];
                 $userModel->role = $formData['role'];
+                $userModel->status = $formData['status'];
 
                 if ($userModel->create()) {
+                    $formData = [];
                     $this->flash->success('Add user successfully');
                 } else {
                     $this->flash->outputMessage('error',  $userModel->getMessages());
@@ -85,7 +109,8 @@ class UserController extends BaseController
 
         $this->view->setVars([
             'formData' => $formData,
-            'roles' => User::$roles
+            'roles' => User::$roles,
+            'status' => User::$statusName
         ]);
     }
 
@@ -97,9 +122,9 @@ class UserController extends BaseController
             $formData = $this->request->getPost();
 
             $user->name = $formData['name'];
-            $user->email = $formData['email'];
             $user->gender = $formData['gender'];
             $user->role = $formData['role'];
+            $user->status = $formData['status'];
 
             if ($user->update()) {
                 $this->flash->success('Update user successfully');
@@ -110,7 +135,36 @@ class UserController extends BaseController
 
         $this->view->setVars([
             'user' => $user,
-            'roles' => User::$roles
+            'roles' => User::$roles,
+            'status' => User::$statusName
         ]);
+    }
+
+    public function deleteAction($id)
+    {
+        $httpRefer = $this->request->getHTTPReferer();
+        if ($httpRefer) {
+            $user = User::getUserById($id);
+
+            if ($user->delete()) {
+                // if deleting the account itself is performed logout
+                if ($user->id == $this->auth->getId()) {
+                    $this->auth->remove();
+                } else {
+                    $this->flashSession->success('Delete user ' . $user->name . ' successfully');
+                }
+            } else {
+                $this->flashSession->outputMessage('error', $user->getMessages());
+            }
+        }
+
+        return $this->response->redirect('admin/user');
+    }
+
+    public function deletesAction()
+    {
+        if ($this->request->isPost()) {
+            die('dasasfsa');
+        }
     }
 }

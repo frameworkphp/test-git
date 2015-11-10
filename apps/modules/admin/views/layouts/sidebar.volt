@@ -11,7 +11,7 @@
             </a>
         </div><!-- /size-toggle -->
         <div class="user-block clearfix">
-            <img src="img/user.jpg" alt="User Avatar">
+            <img src="{{ auth.getAvatar() }}" alt="User Avatar">
             <div class="detail">
                 <strong>{{ auth.getName() }}</strong><span class="badge badge-danger m-left-xs bounceIn animation-delay4">4</span>
                 <p>{{ auth.getRole() }}</p>

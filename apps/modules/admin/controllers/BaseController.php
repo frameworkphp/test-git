@@ -9,7 +9,8 @@ class BaseController extends Controller
     public function initialize()
     {
         $this->breadcrumbs();
-        $this->tag->setTitle('Welcome to PHP Framework');
+        $this->tag->setTitle($this->config->appName);
+        $this->tag->setTitleSeparator(' | ');
     }
 
     public function breadcrumbs()

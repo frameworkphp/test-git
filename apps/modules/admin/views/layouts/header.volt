@@ -189,14 +189,14 @@
             <ul class="dropdown-menu">
                 <li>
                     <a class="clearfix" href="#">
-                        <img src="img/user.jpg" alt="User Avatar">
+                        <img src="{{ auth.getAvatar() }}" alt="User Avatar">
                         <div class="detail">
                             <strong>{{ auth.getName() }}</strong>
                             <p class="grey">{{ auth.getEmail() }}</p>
                         </div>
                     </a>
                 </li>
-                <li><a tabindex="-1" href="{{url('user/edit')}}" class="main-link"><i class="fa fa-edit fa-lg"></i> Edit profile</a></li>
+                <li><a tabindex="-1" href="{{url('admin/user/edit/' ~ auth.getId())}}" class="main-link"><i class="fa fa-edit fa-lg"></i> Edit profile</a></li>
                 <li><a tabindex="-1" href="gallery.html" class="main-link"><i class="fa fa-picture-o fa-lg"></i> Photo Gallery</a></li>
                 <li><a tabindex="-1" href="#" class="theme-setting"><i class="fa fa-cog fa-lg"></i> Setting</a></li>
                 <li class="divider"></li>

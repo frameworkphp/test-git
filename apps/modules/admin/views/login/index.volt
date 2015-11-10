@@ -29,7 +29,8 @@
             </div>
             <div class="panel-body">
                 {{ content() }}
-                <form id="formValidate1" action="" method="post" class="form-login" data-parsley-validate>
+                <form action="" method="post" id="basic-constraint" data-validate="parsley"
+                      novalidate>
                     <div class="form-group">
                         <label>Email</label>
                         <input type="text" placeholder="Email" name="email" value="{{formData['email']}}"
@@ -73,17 +74,6 @@
 {{javascript_include('public/plugins/jquery/jquery-1.10.2.min.js')}}
 <!-- Parsley -->
 {{javascript_include('public/js/admin/parsley.min.js')}}
-
-<script>
-    $( document ).ready(function() {
-        $('#formValidate1').parsley( { listeners: {
-            onFormSubmit: function ( isFormValid, event ) {
-                if(isFormValid)	{
-                }
-            }
-        }});
-    });
-</script>
 
 </body>
 </html>

@@ -1,11 +1,11 @@
-<ul class="pagination pagination-xs m-top-none pull-right">
+<ul class="pagination pagination-xs m-top-none">
     {% set mid_range = 7 %}
 
     {% if pagination.total_pages > 1 %}
         {% if pagination.current != 1%}
-            {% set pageString = '<li>'~ linkTo(""~paginateUrl~"page="~pagination.before, "Previous") ~'</li>' %}
+            {% set pageString = '<li>'~ linkTo(""~paginateUrl~"page="~pagination.before, "«") ~'</li>' %}
         {% else %}
-            {% set pageString = '<li class="disabled"><a>Previous</a></li>' %}
+            {% set pageString = '<li class="disabled"><a>«</a></li>' %}
         {% endif %}
 
         {% set start_range = pagination.current - (mid_range / 2) %}
@@ -34,9 +34,9 @@
         {% endfor %}
 
         {% if pagination.current != pagination.total_pages %}
-            {% set pageString = pageString ~ '<li>'~ linkTo(""~paginateUrl~"page="~pagination.next, "Next") ~'</li>' %}
+            {% set pageString = pageString ~ '<li>'~ linkTo(""~paginateUrl~"page="~pagination.next, "»") ~'</li>' %}
         {% else %}
-            {% set pageString = pageString ~ '<li class="disabled"><a>Next</a></li>' %}
+            {% set pageString = pageString ~ '<li class="disabled"><a>»</a></li>' %}
         {% endif %}
         {{ pageString }}
     {% endif %}

@@ -54,9 +54,11 @@ class Acl extends Plugin
     private function notPermission(Dispatcher $dispatcher)
     {
         return $dispatcher->forward([
-            'module' => 'site',
-            'controller' => 'error',
-            'action' => 'show404'
+            'controller' => 'login',
+            'action' => 'index',
+            'params' => [
+                'redirect' => substr($this->router->getRewriteUri(), 1)
+            ]
         ]);
     }
 

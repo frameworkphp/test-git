@@ -65,8 +65,8 @@ class User extends BaseModel
      * Declare const
      */
     const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 0;
-    const STATUS_BANNED = 2;
+    const STATUS_INACTIVE = 2;
+    const STATUS_BANNED =3;
 
     /**
      * @var array roles
@@ -81,7 +81,7 @@ class User extends BaseModel
      * @var array
      */
     public static $statusName = [
-        self::STATUS_ACTIVE => 'Approved',
+        self::STATUS_ACTIVE => 'Active',
         self::STATUS_INACTIVE => 'Pending',
         self::STATUS_BANNED => 'Banned'
     ];
@@ -106,11 +106,15 @@ class User extends BaseModel
             'beforeCreate' => [
                 'field' => 'avatar',
                 'uploadPath' => $uploadPath,
+                'allowedMinSize' => $config->media->user->imageMinSize,
+                'allowedMaxSize' => $config->media->user->imageMaxSize
             ],
             'beforeUpdate' => [
                 'field' => 'avatar',
                 'uploadPath' => $uploadPath,
-            ],
+                'allowedMinSize' => $config->media->user->imageMinSize,
+                'allowedMaxSize' => $config->media->user->imageMaxSize
+            ]
         ]));
     }
 
@@ -147,6 +151,7 @@ class User extends BaseModel
         $authData->name = $this->name;
         $authData->role = $this->getRoleName();
         $authData->gender = $this->gender;
+        $authData->avatar = $this->getAvatar();
         return $authData;
     }
 
@@ -261,6 +266,10 @@ class User extends BaseModel
     public function getAvatar()
     {
         $config = $this->getDI()->get('config');
-        return $config->baseUri . rtrim($config->media->user->imagePath, '/\\') . '/' . $this->avatar;
+        if ($this->avatar != '') {
+            return $config->baseUri . rtrim($config->media->user->imagePath, '/\\') . '/' . $this->avatar;
+        }
+
+        return $config->baseUri . 'public/images/admin/noavatar.png';
     }
 }

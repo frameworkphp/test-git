@@ -23,8 +23,8 @@ class UserController extends BaseController
     {
         $page = (int)$this->request->getQuery('page', 'int', 1);
         $keyword = $this->request->getQuery('q', 'string', '');
-        $sortBy = $this->request->getQuery('sortby', 'string', '');
-        $sortType = $this->request->getQuery('sorttype', 'string', '');
+        $sort = $this->request->getQuery('sort', 'string', '');
+        $dir = $this->request->getQuery('dir', 'string', '');
 
         // Create url dynamic
         $currentUrl = substr($this->router->getRewriteUri(), 1);
@@ -55,25 +55,25 @@ class UserController extends BaseController
         }
 
         // Get list users
-        $users = User::getUsers($parameter, '*', $this->recordPerPage, $page, $sortBy, $sortType);
+        $users = User::getUsers($parameter, '*', $this->recordPerPage, $page, $sort, $dir);
 
         // Always abort sortBy and sortType
         $orderUrl = $currentUrl . $queryUrl . ($queryUrl == '' ? '?' : '&');
 
-        if ($sortBy != '') {
-            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'sortby=' . $sortBy;
+        if ($sort != '') {
+            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'sort=' . $sort;
         }
 
-        if ($sortType != '') {
-            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'sorttype=' . $sortType;
+        if ($dir != '') {
+            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'dir=' . $dir;
         }
 
         $paginateUrl = $currentUrl . $queryUrl . ($queryUrl == '' ? '?' : '&');
 
         $this->view->setVars([
             'parameter' => $parameter,
-            'sortBy' => $sortBy,
-            'sortType' => $sortType,
+            'sort' => $sort,
+            'dir' => $dir,
             'users' => $users,
             'orderUrl' => $orderUrl,
             'pagination' => $users,
@@ -102,7 +102,7 @@ class UserController extends BaseController
                     $formData = [];
                     $this->flash->success('Add user successfully');
                 } else {
-                    $this->flash->outputMessage('error',  $userModel->getMessages());
+                    $this->flash->outputMessage('error', $userModel->getMessages());
                 }
             }
         }
@@ -119,24 +119,34 @@ class UserController extends BaseController
         $user = User::getUserById($id);
 
         if ($this->request->isPost()) {
-            $formData = $this->request->getPost();
+            if ($this->security->checkToken()) {
+                $formData = $this->request->getPost();
 
-            $user->name = $formData['name'];
-            $user->gender = $formData['gender'];
-            $user->role = $formData['role'];
-            $user->status = $formData['status'];
+                $user->name = $formData['name'];
+                $user->gender = $formData['gender'];
+                $user->role = $formData['role'];
+                $user->status = $formData['status'];
 
-            if ($user->update()) {
-                $this->flash->success('Update user successfully');
-            } else {
-                $this->flash->outputMessage('error', $user->getMessages());
+                if ($user->update()) {
+                    $this->flashSession->success('User ' . $user->name . ' updated.');
+
+                    if ($formData['redirect'] != '') {
+                        $redirect = $formData['redirect'];
+                    } else {
+                        $redirect = 'admin/user';
+                    }
+                    $this->response->redirect($redirect . '#_' . $user->id);
+                } else {
+                    $this->flash->outputMessage('error', $user->getMessages());
+                }
             }
         }
 
         $this->view->setVars([
             'user' => $user,
             'roles' => User::$roles,
-            'status' => User::$statusName
+            'status' => User::$statusName,
+            'redirect' => $this->request->getHTTPReferer()
         ]);
     }
 
@@ -164,7 +174,25 @@ class UserController extends BaseController
     public function deletesAction()
     {
         if ($this->request->isPost()) {
-            die('dasasfsa');
+            $ids = $this->request->getPost('cid');
+            if (count($ids) > 0) {
+                $users = User::find('id IN (' . implode(',', $ids) . ')');
+
+                $userDeleted = [];
+                foreach ($users as $user) {
+                    if ($user->delete()) {
+                        $userDeleted[] = $user->name;
+                    }
+                }
+
+                if (count($userDeleted) > 0) {
+                    $this->flashSession->success('Users ' . implode(', ', $userDeleted) . ' deleted.');
+                } else {
+                    $this->flashSession->error('Users need delete not found.');
+                }
+            }
         }
+
+        return $this->response->redirect('admin/user');
     }
 }

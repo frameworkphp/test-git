@@ -19,6 +19,9 @@
         <!-- Pace -->
         {{ stylesheet_link('css/admin/pace.css') }}
 
+        <!-- toastr -->
+        {{ stylesheet_link('css/admin/toastr.min.css') }}
+
         <!-- Color box -->
         <!--{{ stylesheet_link('css/admin/colorbox.css') }}-->
 
@@ -105,5 +108,6 @@
         <!--{{javascript_include('public/js/admin/endless_dashboard.js')}}-->
         {{javascript_include('public/js/admin/main.js')}}
         {{javascript_include('public/js/admin/parsley.min.js')}}
+        {{javascript_include('public/js/admin/toastr.min.js')}}
     </body>
 </html>

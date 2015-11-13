@@ -14,7 +14,7 @@
                             <label class="col-lg-2 control-label">Avatar</label>
                             <div class="col-lg-2">
                                 <a class="thumbnail pull-left relative ">
-                                <img width="100" height="100" src="{{ user.getAvatar() }}" />
+                                <img width="100" height="100" src="{{ user.getMediumAvatar() }}" />
                                 </a>
                                 <input type="file" name="avatar">
                             </div><!-- /.col -->
@@ -105,9 +105,9 @@
                                 <select class="form-control input-sm" name="status">
                                     {% for id, value in status %}
                                         {% if user.status == id %}
-                                            <option selected value="{{id}}">{{value}}</option>
+                                            <option selected value="{{id}}">{{ value }}</option>
                                         {% else %}
-                                            <option value="{{id}}">{{value}}</option>
+                                            <option value="{{id}}">{{ value }}</option>
                                         {% endif%}
                                     {% endfor %}
                                 </select>
@@ -122,6 +122,7 @@
                             <button type="submit" class="btn btn-sm btn-success">Update</button>
                         </div>
                     </div>
+                    <input type="hidden" name="redirect" value="{{ redirect }}">
                     <input type="hidden" name="{{ security.getTokenKey() }}" value="{{ security.getToken() }}">
                 </form>
             </div>

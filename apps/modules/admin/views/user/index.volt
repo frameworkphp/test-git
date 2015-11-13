@@ -39,9 +39,7 @@
                         </select>
                     </div>
 
-                        <a class="btn btn-default btn-sm pull-left">Filter</a>
-
-
+                    <a id="form-filter" class="btn btn-default btn-sm pull-left">Filter</a>
 
                     <form method="get">
                         <div class="col-md-4 input-group pull-right">
@@ -64,19 +62,19 @@
                                     <span class="custom-checkbox"></span>
                                 </label>
                             </th>
-                            <th class="{% if sortBy == 'id' %}sorted{% else %}sortable{% endif %}">
-                                <a href="{{url(orderUrl)}}sortby=id&{% if sortBy == 'id' and sortType|lower == 'asc' %}sorttype=desc{% else %}sorttype=asc{% endif %}{% if pagination.current > 1 %}&page={{pagination.current}}{% endif %}">
-                                    ID {% if sortBy == 'id' and sortType|lower == 'desc' %}<i class="fa fa-caret-down"></i>{% else %}<i class="fa fa-caret-up"></i>{% endif %}
+                            <th class="{% if sort == 'id' %}sorted{% else %}sortable{% endif %}">
+                                <a href="{{url(orderUrl)}}sort=id&{% if sort == 'id' and dir|lower == 'asc' %}dir=desc{% else %}dir=asc{% endif %}{% if pagination.current > 1 %}&page={{pagination.current}}{% endif %}">
+                                    ID {% if sort == 'id' and dir|lower == 'desc' %}<i class="fa fa-caret-down"></i>{% else %}<i class="fa fa-caret-up"></i>{% endif %}
                                 </a>
                             </th>
-                            <th class="{% if sortBy == 'name' %}sorted{% else %}sortable{% endif %}">
-                                <a href="{{url(orderUrl)}}sortby=name&{% if sortBy == 'name' and sortType|lower == 'asc' %}sorttype=desc{% else %}sorttype=asc{% endif %}{% if pagination.current > 1 %}&page={{pagination.current}}{% endif %}">
-                                    Name {% if sortBy == 'name' and sortType|lower == 'desc' %}<i class="fa fa-caret-down"></i>{% else %}<i class="fa fa-caret-up"></i>{% endif %}
+                            <th class="{% if sort == 'name' %}sorted{% else %}sortable{% endif %}">
+                                <a href="{{url(orderUrl)}}sort=name&{% if sort == 'name' and dir|lower == 'asc' %}dir=desc{% else %}dir=asc{% endif %}{% if pagination.current > 1 %}&page={{pagination.current}}{% endif %}">
+                                    Name {% if sort == 'name' and dir|lower == 'desc' %}<i class="fa fa-caret-down"></i>{% else %}<i class="fa fa-caret-up"></i>{% endif %}
                                 </a>
                             </th>
-                            <th class="{% if sortBy == 'email' %}sorted{% else %}sortable{% endif %}">
-                                <a href="{{url(orderUrl)}}sortby=email&{% if sortBy == 'email' and sortType|lower == 'asc' %}sorttype=desc{% else %}sorttype=asc{% endif %}{% if pagination.current > 1 %}&page={{pagination.current}}{% endif %}">
-                                    Email {% if sortBy == 'email' and sortType|lower == 'desc' %}<i class="fa fa-caret-down"></i>{% else %}<i class="fa fa-caret-up"></i>{% endif %}
+                            <th class="{% if sort == 'email' %}sorted{% else %}sortable{% endif %}">
+                                <a href="{{url(orderUrl)}}sort=email&{% if sort == 'email' and dir|lower == 'asc' %}dir=desc{% else %}dir=asc{% endif %}{% if pagination.current > 1 %}&page={{pagination.current}}{% endif %}">
+                                    Email {% if sort == 'email' and dir|lower == 'desc' %}<i class="fa fa-caret-down"></i>{% else %}<i class="fa fa-caret-up"></i>{% endif %}
                                 </a>
                             </th>
                             <th>Role</th>
@@ -106,12 +104,12 @@
 
                     <div class="panel-footer clearfix">
                         <div class="pull-left form-filter">
-                                <select name="bulkAction" class="input-sm form-control">
-                                    <option>Bulk action</option>
+                                <select name="selectBulkAction" class="input-sm form-control">
+                                    <option value="0">Bulk action</option>
                                     <option value="deletes">Delete</option>
                                 </select>
                         </div>
-                        <a class="btn btn-default btn-sm pull-left">Apply</a>
+                        <a id="bulk-action" class="btn btn-default btn-sm pull-left">Apply</a>
                         <div class="pull-right">
                             <p class="pagination-showing">
                                 Showing {{(users.current - 1) * users.limit + 1}} to 10 of {{users.total_items}} entries
@@ -126,7 +124,7 @@
                 {% else %}
                 <div class="col-md-12">
                     <div class="table-no-record">
-                        <p>No user found!</p>
+                        <p>No user found.</p>
                         <i class="fa fa-user"></i>
                     </div>
                 </div>

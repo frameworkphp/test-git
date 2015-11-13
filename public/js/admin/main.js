@@ -272,6 +272,20 @@ $(function () {
         }
     });
 
+    $('#bulk-action').click(function () {
+        console.log(document.appForm.action);
+        var action = $('select[name="selectBulkAction"] option:selected').val();
+        if (action != 0) {
+            if (document.appForm.boxChecked.value > 0) {
+                submitForm("user/" + action);
+            } else {
+                toastr.error("Let's select a item to implement. Please!");
+            }
+        } else {
+            toastr.error("Let's select a action. Please!");
+        }
+    });
+
 });
 
 $(window).load(function () {
@@ -305,16 +319,12 @@ $(window).scroll(function () {
     }
 });
 
-function submitButton(pressButton) {
-    submitForm(pressButton);
-}
-
 /**
  * Submit the admin form
  */
-function submitForm(pressButton) {
-    if (pressButton) {
-        document.appForm.action = pressButton;
+function submitForm(action) {
+    if (action) {
+        document.appForm.action = action;
     }
     if (typeof document.appForm.onsubmit == "function") {
         document.appForm.onsubmit();

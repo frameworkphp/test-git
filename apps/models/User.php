@@ -105,15 +105,11 @@ class User extends BaseModel
         $this->addBehavior(new Imageable([
             'beforeCreate' => [
                 'field' => 'avatar',
-                'uploadPath' => $uploadPath,
-                'allowedMinSize' => $config->media->user->imageMinSize,
-                'allowedMaxSize' => $config->media->user->imageMaxSize
+                'media' => $config->media->user
             ],
             'beforeUpdate' => [
                 'field' => 'avatar',
-                'uploadPath' => $uploadPath,
-                'allowedMinSize' => $config->media->user->imageMinSize,
-                'allowedMaxSize' => $config->media->user->imageMaxSize
+                'media' => $config->media->user
             ]
         ]));
     }
@@ -268,6 +264,38 @@ class User extends BaseModel
         $config = $this->getDI()->get('config');
         if ($this->avatar != '') {
             return $config->baseUri . rtrim($config->media->user->imagePath, '/\\') . '/' . $this->avatar;
+        }
+
+        return $config->baseUri . 'public/images/admin/noavatar.png';
+    }
+
+    public function getMediumAvatar()
+    {
+        $config = $this->getDI()->get('config');
+        if ($this->avatar != '') {
+            // analyze image
+            $pos = strrpos($this->avatar, '.');
+            $extPart = substr($this->avatar, $pos + 1);
+            $namePart = substr($this->avatar, 0, $pos);
+            $mediumAvatar = $namePart . '-medium.' . $extPart;
+
+            return $config->baseUri . rtrim($config->media->user->imagePath, '/\\') . '/' . $mediumAvatar;
+        }
+
+        return $config->baseUri . 'public/images/admin/noavatar.png';
+    }
+
+    public function getSmallAvatar()
+    {
+        $config = $this->getDI()->get('config');
+        if ($this->avatar != '') {
+            // analyze image
+            $pos = strrpos($this->avatar, '.');
+            $extPart = substr($this->avatar, $pos + 1);
+            $namePart = substr($this->avatar, 0, $pos);
+            $smallAvatar = $namePart . '-small.' . $extPart;
+
+            return $config->baseUri . rtrim($config->media->user->imagePath, '/\\') . '/' . $smallAvatar;
         }
 
         return $config->baseUri . 'public/images/admin/noavatar.png';

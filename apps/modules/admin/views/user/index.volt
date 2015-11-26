@@ -14,8 +14,8 @@
                 </div>
                 <div class="panel-body clearfix">
                     <div class="col-md-2 form-filter">
-                        <select name="role" class="input-sm form-control">
-                            <option>Select a role</option>
+                        <select name="filter[role]" data-type="role" class="input-sm form-control">
+                            <option value="all">Select a role</option>
                             {% for name, value in roles %}
                                 {% if name == parameter['role'] %}
                                     <option selected value="{{name}}">{{value}}</option>
@@ -27,8 +27,8 @@
                     </div>
 
                     <div class="col-md-2 form-filter">
-                        <select name="status" class="input-sm form-control">
-                            <option >Select a user state</option>
+                        <select name="filter[status]" data-type="status" class="input-sm form-control">
+                            <option value="all">Select a user state</option>
                             {% for id, value in status %}
                                 {% if id == parameter['status'] %}
                                     <option selected value="{{id}}">{{value}}</option>
@@ -51,8 +51,9 @@
                         </div>
                     </form>
                 </div>
-                {% if users.total_items > 0 %}
+
                 <form method="post" name="appForm">
+                    {% if users.total_items > 0 %}
                     <table class="table table-striped" id="responsiveTable">
                         <thead>
                         <tr>
@@ -119,16 +120,18 @@
                             {% endif %}
                         </div>
                     </div>
-                    <input type="hidden" name="boxChecked" value="0" />
-                </form>
-                {% else %}
-                <div class="col-md-12">
-                    <div class="table-no-record">
-                        <p>No user found.</p>
-                        <i class="fa fa-user"></i>
+                    {% else %}
+                    <div class="col-md-12">
+                        <div class="table-no-record">
+                            <p>No user found.</p>
+                            <i class="fa fa-user"></i>
+                        </div>
                     </div>
-                </div>
-                {% endif %}
+                    {% endif %}
+                    <input type="hidden" name="boxChecked" value="0" />
+                    <input type="hidden" name="sort" value="{{ sort }}" />
+                    <input type="hidden" name="dir" value="{{ dir }}" />
+                </form>
             </div>
             <!-- /panel -->
         </div>

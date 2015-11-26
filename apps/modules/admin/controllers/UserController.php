@@ -112,6 +112,7 @@ class UserController extends BaseController
             'roles' => User::$roles,
             'status' => User::$statusName
         ]);
+        $this->tag->prependTitle('Add user');
     }
 
     public function editAction($id)
@@ -148,6 +149,7 @@ class UserController extends BaseController
             'status' => User::$statusName,
             'redirect' => $this->request->getHTTPReferer()
         ]);
+        $this->tag->prependTitle('Edit user');
     }
 
     public function deleteAction($id)

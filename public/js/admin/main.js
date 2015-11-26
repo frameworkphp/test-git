@@ -273,16 +273,50 @@ $(function () {
     });
 
     $('#bulk-action').click(function () {
-        console.log(document.appForm.action);
         var action = $('select[name="selectBulkAction"] option:selected').val();
         if (action != 0) {
             if (document.appForm.boxChecked.value > 0) {
-                submitForm("user/" + action);
+                submitForm("/" + action);
             } else {
                 toastr.error("Let's select a item to implement. Please!");
             }
         } else {
             toastr.error("Let's select a action. Please!");
+        }
+    });
+
+    $('#form-filter').click(function () {
+        var queryUrl = {};
+        var keyword = $('input[name^="q"]').val();
+        if (keyword != '') {
+            queryUrl['q'] = keyword;
+        }
+
+        // Get param filter
+        $('select[name^="filter"]').each(function() {
+            var type = $(this).attr('data-type');
+            if ($(this).val() != 'all') {
+                queryUrl[type] = $(this).val();
+            }
+        });
+
+        // Get param sort
+        var sort = $('input[name^="sort"]').val();
+        var dir = $('input[name^="dir"]').val();
+        if (sort != '') {
+            queryUrl['sort'] = sort;
+        }
+
+        if (dir != '') {
+            queryUrl['dir'] = dir;
+        }
+
+        var str = jQuery.param( queryUrl );
+        if (str != '') {
+            window.location.href = '?' + str;
+        } else {
+            var url = window.location.pathname;
+            console.log(url);
         }
     });
 

@@ -83,7 +83,7 @@ class Imageable extends Behavior implements BehaviorInterface
     public function notify($eventType, ModelInterface $model)
     {
         if (!is_string($eventType)) {
-            throw new Exception('Invalid parameter type.');
+            throw new \Exception('Invalid parameter type.');
         }
 
         // Check if the developer decided to take action here

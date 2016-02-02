@@ -44,7 +44,14 @@ class Acl extends Plugin
     {
         $auth = $this->session->get('Auth');
         if (!$auth) {
-            $role = 'guest';
+            // Login with cookies remember me
+            $auth = $this->auth->loginWithRememberMe();
+            if ($auth) {
+                // When user edit role we get again role for user
+                $role = User::getRoleById($auth->id);
+            } else {
+                $role = 'guest';
+            }
         } else {
             $role = User::getRoleById($auth->id);
         }

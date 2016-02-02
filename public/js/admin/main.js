@@ -276,7 +276,7 @@ $(function () {
         var action = $('select[name="selectBulkAction"] option:selected').val();
         if (action != 0) {
             if (document.appForm.boxChecked.value > 0) {
-                submitForm("/" + action);
+                submitForm(getUrlPath() + "/" + action);
             } else {
                 toastr.error("Let's select a item to implement. Please!");
             }
@@ -315,8 +315,7 @@ $(function () {
         if (str != '') {
             window.location.href = '?' + str;
         } else {
-            var url = window.location.pathname;
-            console.log(url);
+            window.location.href = getUrlPath();
         }
     });
 
@@ -364,4 +363,15 @@ function submitForm(action) {
         document.appForm.onsubmit();
     }
     document.appForm.submit();
+}
+
+function getAbsolutePath() {
+    var loc = window.location;
+    var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+    return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+}
+
+function getUrlPath()
+{
+    return window.location.origin + window.location.pathname;
 }

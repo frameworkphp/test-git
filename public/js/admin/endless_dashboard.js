@@ -1,162 +1,271 @@
-$(function	()	{
-	$("<div id='tooltip'></div>").css({
-		position: "absolute",
-		display: "none",
-		border: "1px solid #222",
-		padding: "4px",
-		color: "#fff",
-		"border-radius": "4px",
-		"background-color": "rgb(0,0,0)",
-		opacity: 0.90
-	}).appendTo("body");
+(function ($, window, document, undefined) {
+    var pluginName = "searchtools";
+    var defaults = {
+        formSelector: ".js-stools-form",
+        searchFieldSelector: ".js-stools-field-search",
+        clearBtnSelector: ".js-stools-btn-clear",
+        mainContainerSelector: ".js-stools",
+        searchBtnSelector: ".js-stools-btn-search",
+        filterBtnSelector: ".js-stools-btn-filter",
+        filterContainerSelector: ".js-stools-container-filters",
+        filtersHidden: true,
+        listBtnSelector: ".js-stools-btn-list",
+        listContainerSelector: ".js-stools-container-list",
+        listHidden: false,
+        orderColumnSelector: ".js-stools-column-order",
+        orderBtnSelector: ".js-stools-btn-order",
+        orderFieldSelector: ".js-stools-field-order",
+        orderFieldName: "list[fullordering]",
+        limitFieldSelector: ".js-stools-field-limit",
+        defaultLimit: 20,
+        activeOrder: null,
+        activeDirection: "ASC",
+        chosenSupport: true,
+        clearListOptions: false
+    };
 
-	$("#placeholder").bind("plothover", function (event, pos, item) {
+    function Plugin(element, options) {
+        this.element = element;
+        this.options = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this.theForm = $(this.options.formSelector);
+        this.filterButton = $(this.options.formSelector + " " + this.options.filterBtnSelector);
+        this.filterContainer = $(this.options.formSelector + " " + this.options.filterContainerSelector);
+        this.filtersHidden = this.options.filtersHidden;
+        this.listButton = $(this.options.formSelector + " " + this.options.listBtnSelector);
+        this.listContainer = $(this.options.formSelector + " " + this.options.listContainerSelector);
+        this.listHidden = this.options.listHidden;
+        this.mainContainer = $(this.options.mainContainerSelector);
+        this.searchButton = $(this.options.formSelector + " " + this.options.searchBtnSelector);
+        this.searchField = $(this.options.formSelector + " " + this.options.searchFieldSelector);
+        this.searchString = null;
+        this.clearButton = $(this.options.clearBtnSelector);
+        this.orderCols = $(this.options.formSelector + " " + this.options.orderColumnSelector);
+        this.orderField = $(this.options.formSelector + " " + this.options.orderFieldSelector);
+        this.limitField = $(this.options.formSelector + " " + this.options.limitFieldSelector);
+        this.activeColumn = null;
+        this.activeDirection = this.options.activeDirection;
+        this.activeOrder = this.options.activeOrder;
+        this.activeLimit = null;
+        this.chosenSupport = this.options.chosenSupport;
+        this.clearListOptions = this.options.clearListOptions;
+        this._name = pluginName;
+        this.init()
+    }
 
-		var str = "(" + pos.x.toFixed(2) + ", " + pos.y.toFixed(2) + ")";
-		$("#hoverdata").text(str);
-	
-		if (item) {
-			var x = item.datapoint[0],
-				y = item.datapoint[1];
-			
-				$("#tooltip").html("Visitor : " + y)
-				.css({top: item.pageY+5, left: item.pageX+5})
-				.fadeIn(200);
-		} else {
-			$("#tooltip").hide();
-		}
-	});
-
-	$("#placeholder").bind("plotclick", function (event, pos, item) {
-		if (item) {
-			$("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
-			plot.highlight(item.series, item.datapoint);
-		}
-	});
-			
-	var animate = function () {
-	   $('#placeholder').animate( {tabIndex: 0}, {
-		   duration: 3000,
-		   step: function ( now, fx ) {
-
-				 var r = $.map( init.data, function ( o ) {
-					  return [[ o[0], o[1] * fx.pos ]];
-				});
-
-				 plot.setData( [{ data: r }] );
-			 plot.draw();
-			}	
-		});
-	}
-		
-	animate();
-
-	//Timeline color box
-	$('.timeline-img').colorbox({
-		rel:'group1',
-		width:"90%",
-		maxWidth:'800px'
-	});
-
-	//Resize graph when toggle side menu
-	$('.navbar-toggle').click(function()	{
-		setTimeout(function() {
-			donutChart.redraw();
-			lineChart.redraw();
-			barChart.redraw();			
-			
-			$.plot($('#placeholder'), [init], options);
-		},500);	
-	});
-	
-	$('.size-toggle').click(function()	{
-		//resize morris chart
-		setTimeout(function() {
-			donutChart.redraw();
-			lineChart.redraw();
-			barChart.redraw();	
-
-			$.plot($('#placeholder'), [init], options);			
-		},500);
-	});
-
-	//Refresh statistic widget
-	$('.refresh-button').click(function() {
-		var _overlayDiv = $(this).parent().children('.loading-overlay');
-		_overlayDiv.addClass('active');
-		
-		setTimeout(function() {
-			_overlayDiv.removeClass('active');
-		}, 2000);
-		
-		return false;
-	});
-	
-	$(window).load(function(e)	{
-	
-		//Number Animation
-		var currentUser = $('#userCount').text();
-		$({numberValue: 0}).animate({numberValue: currentUser}, {
-			duration: 2500,
-			easing: 'linear',
-			step: function() { 
-				$('#userCount').text(Math.ceil(this.numberValue)); 
-			}
-		});
-				
-		var currentServerload = $('#serverloadCount').text();
-		$({numberValue: 0}).animate({numberValue: currentServerload}, {
-			duration: 2500,
-			easing: 'linear',
-			step: function() { 
-				$('#serverloadCount').text(Math.ceil(this.numberValue)); 
-			}
-		});
-			
-		var currentOrder = $('#orderCount').text();
-		$({numberValue: 0}).animate({numberValue: currentOrder}, {
-			duration: 2500,
-			easing: 'linear',
-			step: function() { 
-				$('#orderCount').text(Math.ceil(this.numberValue)); 
-			}
-		});
-			
-		var currentVisitor = $('#visitorCount').text();
-		$({numberValue: 0}).animate({numberValue: currentVisitor}, {
-			duration: 2500,
-			easing: 'linear',
-			step: function() { 
-				$('#visitorCount').text(Math.ceil(this.numberValue)); 
-			}
-		});
-	
-		setInterval(function() {
-			var currentNumber = $('#userCount').text();
-			var randomNumber = Math.floor(Math.random()*20) + 1;
-			var newNumber = parseInt(currentNumber, 10) + parseInt(randomNumber, 10); 
-		
-			$({numberValue: currentNumber}).animate({numberValue: newNumber}, {
-				duration: 500,
-				easing: 'linear',
-				step: function() { 
-					$('#userCount').text(Math.ceil(this.numberValue)); 
-				}
-			});
-		}, 3000);
-			
-		setInterval(function() {
-			var currentNumber = $('#visitorCount').text();
-			var randomNumber = Math.floor(Math.random()*50) + 1;
-			var newNumber = parseInt(currentNumber, 10) + parseInt(randomNumber, 10); 
-		
-			$({numberValue: currentNumber}).animate({numberValue: newNumber}, {
-				duration: 500,
-				easing: 'linear',
-				step: function() { 
-					$('#visitorCount').text(Math.ceil(this.numberValue)); 
-				}
-			});
-		}, 5000);
-	});
-});
+    Plugin.prototype = {
+        init: function () {
+            var self = this;
+            if (!document.addEventListener) {
+                if (this.searchField.val() === this.searchField.attr("placeholder")) {
+                    this.searchField.val("")
+                }
+            }
+            this.searchString = this.searchField.val();
+            if (this.filtersHidden) {
+                this.hideFilters()
+            } else {
+                this.showFilters()
+            }
+            if (this.listHidden) {
+                this.hideList()
+            } else {
+                this.showList()
+            }
+            self.filterButton.click(function (e) {
+                self.toggleFilters();
+                e.stopPropagation();
+                e.preventDefault()
+            });
+            self.listButton.click(function (e) {
+                self.toggleList();
+                e.stopPropagation();
+                e.preventDefault()
+            });
+            self.getFilterFields().each(function (i, element) {
+                self.checkFilter(element);
+                $(element).change(function () {
+                    self.checkFilter(element)
+                })
+            });
+            self.clearButton.click(function (e) {
+                self.clear()
+            });
+            this.createOrderField();
+            this.orderCols.click(function () {
+                var newOrderCol = $(this).attr("data-order");
+                var newDirection = $(this).attr('data-direction');
+                var newOrdering = newOrderCol + " " + newDirection;
+                if (newOrderCol.length) {
+                    self.activeColumn = newOrderCol;
+                    if (newOrdering !== self.activeOrder) {
+                        self.activeDirection = newDirection;
+                        self.activeOrder = newOrdering;
+                        self.updateFieldValue(self.orderField, newOrdering)
+                    } else {
+                        self.toggleDirection()
+                    }
+                    self.theForm.submit()
+                }
+            })
+        }, checkFilter: function (element) {
+            var self = this;
+            var option = $(element).find("option:selected");
+            if (option.val() !== "") {
+                self.activeFilter(element)
+            } else {
+                self.deactiveFilter(element)
+            }
+        }, clear: function () {
+            var self = this;
+            self.getFilterFields().each(function (i, element) {
+                $(element).val("");
+                self.checkFilter(element);
+                if (self.chosenSupport) {
+                    $(element).trigger("liszt:updated")
+                }
+            });
+            if (self.clearListOptions) {
+                self.getListFields().each(function (i, element) {
+                    $(element).val("");
+                    self.checkFilter(element);
+                    if (self.chosenSupport) {
+                        $(element).trigger("liszt:updated")
+                    }
+                });
+                $("#list_limit").val(self.options.defaultLimit);
+                if (self.chosenSupport) {
+                    $("#list_limit").trigger("liszt:updated")
+                }
+            }
+            self.searchField.val("");
+            self.theForm.submit()
+        }, activeFilter: function (element) {
+            var self = this;
+            $(element).addClass("active");
+            var chosenId = "#" + $(element).attr("id") + "_chzn";
+            $(chosenId).addClass("active")
+        }, deactiveFilter: function (element) {
+            var self = this;
+            $(element).removeClass("active");
+            var chosenId = "#" + $(element).attr("id") + "_chzn";
+            $(chosenId).removeClass("active")
+        }, getFilterFields: function () {
+            return this.filterContainer.find("select")
+        }, getListFields: function () {
+            return this.listContainer.find("select")
+        }, hideContainer: function (container) {
+            $(container).hide("fast");
+            $(container).removeClass("shown")
+        }, showContainer: function (container) {
+            $(container).show("fast");
+            $(container).addClass("shown")
+        }, toggleContainer: function (container) {
+            if ($(container).hasClass("shown")) {
+                this.hideContainer(container)
+            } else {
+                this.showContainer(container)
+            }
+        }, hideList: function () {
+            this.hideContainer(this.listContainer);
+            this.listButton.removeClass("btn-primary")
+        }, showList: function () {
+            this.showContainer(this.listContainer);
+            this.listButton.addClass("btn-primary")
+        }, toggleList: function () {
+            this.toggleContainer(this.listContainer);
+            if (this.listContainer.hasClass("shown")) {
+                this.listButton.addClass("btn-primary")
+            } else {
+                this.listButton.removeClass("btn-primary")
+            }
+        }, hideFilters: function () {
+            this.hideContainer(this.filterContainer);
+            this.filterButton.removeClass("btn-primary")
+        }, showFilters: function () {
+            this.showContainer(this.filterContainer);
+            this.filterButton.addClass("btn-primary")
+        }, toggleFilters: function () {
+            this.toggleContainer(this.filterContainer);
+            if (this.filterContainer.hasClass("shown")) {
+                this.filterButton.addClass("btn-primary")
+            } else {
+                this.filterButton.removeClass("btn-primary")
+            }
+        }, toggleDirection: function () {
+            var self = this;
+            var newDirection = "ASC";
+            if (self.activeDirection.toUpperCase() == "ASC") {
+                newDirection = "DESC"
+            }
+            self.activeDirection = newDirection;
+            self.activeOrder = self.activeColumn + " " + newDirection;
+            self.updateFieldValue(self.orderField, self.activeOrder)
+        }, createOrderField: function () {
+            var self = this;
+            if (!this.orderField.length) {
+                this.orderField = $("<input>").attr({
+                    type: "hidden",
+                    id: "js-stools-field-order",
+                    "class": "js-stools-field-order",
+                    name: self.options.orderFieldName,
+                    value: self.activeOrder + " " + this.activeDirection
+                });
+                this.orderField.appendTo(this.theForm)
+            }
+            if (this.orderField.is("select")) {
+                this.orderCols.each(function () {
+                    var value = $(this).attr("data-order");
+                    var name = $(this).attr("data-name");
+                    var direction = $(this).attr("data-direction");
+                    if (value.length) {
+                        value = value + " " + direction;
+                        var option = self.findOption(self.orderField, value);
+                        if (!option.length) {
+                            var option = $("<option>");
+                            option.text(name).val(value);
+                            if ($(this).hasClass("active")) {
+                                option.attr("selected", "selected")
+                            }
+                            self.orderField.append(option)
+                        }
+                    }
+                });
+                this.orderField.trigger("liszt:updated")
+            }
+            this.activeOrder = this.orderField.val()
+        }, updateFieldValue: function (field, newValue) {
+            var self = this;
+            var type = field.attr("type");
+            if (type === "hidden" || type === "text") {
+                field.attr("value", newValue)
+            } else if (field.is("select")) {
+                var desiredOption = field.find("option").filter(function () {
+                    return $(this).val() == newValue
+                });
+                if (desiredOption.length) {
+                    desiredOption.attr("selected", "selected")
+                } else {
+                    var option = $("<option>");
+                    option.text(newValue).val(newValue);
+                    option.attr("selected", "selected");
+                    field.append(option)
+                }
+                if (self.chosenSupport) {
+                    field.trigger("liszt:updated")
+                }
+            }
+        }, findOption: function (select, value) {
+            return select.find("option").filter(function () {
+                return $(this).val() == value
+            })
+        }
+    };
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+            if (!$.data(this, "plugin_" + pluginName)) {
+                $.data(this, "plugin_" + pluginName, new Plugin(this, options))
+            }
+        })
+    }
+})(jQuery, window, document);

@@ -7,10 +7,8 @@
  */
 namespace Admin\Controllers;
 
-use Models\Logs;
-use Models\User;
-use Phalcon\Mvc\View;
 use Phalcon\Mvc\Controller;
+use Phalcon\Mvc\View;
 
 class LoginController extends Controller
 {
@@ -25,7 +23,7 @@ class LoginController extends Controller
 
     public function indexAction()
     {
-        $formData = array();
+        $formData = [];
         if ($this->request->isPost()) {
             if ($this->security->checkToken()) {
                 $formData = $this->request->getPost();

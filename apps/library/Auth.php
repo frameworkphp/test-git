@@ -14,6 +14,7 @@
 namespace Library;
 
 use Models\Logs;
+use Models\Token;
 use Models\User;
 use Phalcon\Mvc\User\Component;
 
@@ -145,9 +146,15 @@ class Auth extends Component
         $userAgent = $this->request->getUserAgent();
         $token = md5($user->email . $user->password . $userAgent);
 
-        $expire = time() + 86400 * 8;
-        $this->cookies->set('user', $user->id, $expire);
-        $this->cookies->set('token', $token, $expire);
+        $tokenModel = new Token();
+        $tokenModel->userId = $user->id;
+        $tokenModel->token = $token;
+        $tokenModel->userAgent = $userAgent;
+        if ($tokenModel->create()) {
+            $expire = time() + 86400 * 8;
+            $this->cookies->set('user', $user->id, $expire);
+            $this->cookies->set('token', $token, $expire);
+        }
     }
 
     /**
@@ -211,5 +218,54 @@ class Auth extends Component
         $this->checkUserStatus($user);
 
         $this->session->set('Auth', $user->getAuthData());
+    }
+
+    /**
+     * Login on using the information in the cookies
+     *
+     * @return Phalcon\Http\Response
+     */
+    public function loginWithRememberMe()
+    {
+        $userId = $this->cookies->get('user')->getValue();
+        $cookieToken = $this->cookies->get('token')->getValue();
+
+        $user = User::getUserById($userId);
+        if ($user) {
+            $userAgent = $this->request->getUserAgent();
+            $token = md5($user->email . $user->password . $userAgent);
+
+            if ($cookieToken == $token) {
+                $remember = Token::findFirst([
+                    'userId = ?0 AND token = ?1',
+                    'bind' => [
+                        $user->id,
+                        $token
+                    ]
+                ]);
+                if ($remember) {
+                    // Check if the cookie has not expired
+                    if ((time() - (86400 * 8)) < $remember->dateCreated) {
+                        $this->checkUserStatus($user);
+                        $this->session->set('Auth', $user->getAuthData());
+
+                        // Handel write log
+                        $infoLog = [
+                            'user_id' => $user->id,
+                            'email' => $user->email,
+                            'role' => $user->role,
+                            'user_agent' => $this->request->getUserAgent(),
+                            'ip_address' => $this->request->getClientAddress()
+                        ];
+                        Logs::log('Login with remember me' . $user->role, serialize($infoLog), Logs::INFO);
+
+                        return $user->getAuthData();
+                    }
+                }
+            }
+        }
+        $this->remove();
+
+        return false;
     }
 }

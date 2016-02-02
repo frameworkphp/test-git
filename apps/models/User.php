@@ -100,7 +100,6 @@ class User extends BaseModel
         $this->setSource(TABLE_PREFIX . 'user');
 
         $config = $this->getDI()->get('config');
-        $uploadPath = rtrim($config->media->user->imagePath, '/\\');
 
         $this->addBehavior(new Imageable([
             'beforeCreate' => [

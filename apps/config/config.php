@@ -10,10 +10,10 @@ return [
         'dbname' => 'framework'
     ],
     'application' => [
-        'modelsDir' => ROOT_URL . '/apps/models/',
-        'libraryDir' => ROOT_URL . '/apps/library/',
-        'pluginsDir' => ROOT_URL . '/apps/plugin/',
-        'cacheDir' => ROOT_URL . '/apps/cache/'
+        'modelsDir' => APP_URL . 'models/',
+        'libraryDir' => APP_URL . 'library/',
+        'pluginsDir' => APP_URL . 'plugin/',
+        'cacheDir' => APP_URL . 'cache/'
     ],
     'memcache' => [
         'host' => 'localhost',

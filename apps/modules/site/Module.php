@@ -13,9 +13,9 @@ class Module
         $loader = FactoryDefault::getDefault()->get('loader');
 
         $loader->registerNamespaces([
-            'Site\Controllers' => ROOT_URL . '/apps/modules/site/controllers/',
-            'Plugins' => ROOT_URL . '/apps/plugins/',
-            'Models' => ROOT_URL . '/apps/models/'
+            'Site\Controllers' => APP_URL . 'modules/site/controllers/',
+            'Plugins' => APP_URL . 'plugins/',
+            'Models' => APP_URL . 'models/'
         ],true);
     }
 

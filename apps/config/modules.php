@@ -6,10 +6,10 @@
 $application->registerModules([
     'site' => [
         'className' => 'Modules\Site\Module',
-        'path' => ROOT_URL . '/apps/modules/site/Module.php'
+        'path' => APP_URL . 'modules/site/Module.php'
     ],
     'admin' => [
         'className' => 'Modules\Admin\Module',
-        'path' => ROOT_URL . '/apps/modules/admin/Module.php'
+        'path' => APP_URL . 'modules/admin/Module.php'
     ]
 ]);

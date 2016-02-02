@@ -32,13 +32,13 @@ $di = new FactoryDefault();
  * Registering a router
  */
 $di['router'] = function () {
-    return require_once ROOT_URL . '/apps/config/routers.php';
+    return require_once APP_URL . 'config/routers.php';
 };
 
 /**
  * Register the configuration itself as a service
  */
-$config = new Config(include ROOT_URL . '/apps/config/config.php');
+$config = new Config(include APP_URL . 'config/config.php');
 $di->setShared('config', function () use ($config) {
     return $config;
 });
@@ -47,7 +47,7 @@ $di->setShared('config', function () use ($config) {
  * Auto loader
  */
 $di['loader'] = function () {
-    return require_once ROOT_URL . '/apps/config/loaders.php';
+    return require_once APP_URL . 'config/loaders.php';
 };
 
 /**
@@ -112,7 +112,7 @@ $di['modelsManager'] = function () {
 
 $di['annotations'] = function () {
     return new AnnotationsAdapter(array(
-        'annotationsDir' => ROOT_URL . '/apps/cache/annotations/'
+        'annotationsDir' => APP_URL . 'cache/annotations/'
     ));
 };
 
@@ -122,7 +122,7 @@ $di['annotations'] = function () {
 $di['modelsMetadata'] = function () {
     //Use the memory meta-data adapter in development
     $metaData = new MetaDataAdapter([
-        'metaDataDir' => ROOT_URL . '/apps/cache/metadata/'
+        'metaDataDir' => APP_URL . 'cache/metadata/'
     ]);
 
     //Set a custom meta-data database introspection
@@ -135,7 +135,7 @@ $di['modelsMetadata'] = function () {
  * Access Control List
  */
 $di['acl'] = function () {
-    $resources = require_once ROOT_URL . '/apps/config/acl.php';
+    $resources = require_once APP_URL . 'config/acl.php';
     return new Acl($resources);
 };
 
@@ -148,7 +148,7 @@ $di['dispatcher'] = function () use ($di) {
     /**
      * Handle exceptions and not-found exceptions using NotFoundPlugin
      */
-    //$eventsManager->attach('dispatch:beforeException', new \Plugins\NotFoundPlugin);
+    $eventsManager->attach('dispatch:beforeException', new \Plugins\NotFoundPlugin);
 
     $dispatcher = new Dispatcher;
 
@@ -218,7 +218,7 @@ $di['modelsCache'] = function () use ($config) {
     switch ($config->cache) {
         case 'file':
             $cache = new Phalcon\Cache\Backend\File($frontCache, [
-                'cacheDir' => ROOT_URL . '/apps/cache/model/'
+                'cacheDir' => APP_URL . 'cache/model/'
             ]);
             break;
         case 'memcache':

@@ -71,7 +71,7 @@ class Acl extends Plugin
 
     private function resourceNotFound($resource)
     {
-        $this->view->setViewsDir(ROOT_URL . '/apps/modules/site/views/');
+        $this->view->setViewsDir(APP_URL . 'modules/site/views/');
         $this->view->setPartialsDir('');
         $this->view->message = "Acl resource <b>$resource</b> in <b>/app/config/acl.php</b> not exists";
         $this->view->partial('error/show404');

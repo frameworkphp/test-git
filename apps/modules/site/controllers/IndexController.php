@@ -4,7 +4,7 @@ namespace Site\Controllers;
 use \Modules\Models\Services\Services as Services;
 use Phalcon\Mvc\View;
 
-class IndexController extends ControllerBase
+class IndexController extends BaseController
 {
     public function indexAction()
     {
@@ -17,6 +17,7 @@ class IndexController extends ControllerBase
         //$this->view->setRenderLevel(View::LEVEL_MAIN_LAYOUT);
         //$this->view->pick("index/about");
         //$this->view->disable();
+        $this->tag->prependTitle('Index site');
     }
 
     public function aboutAction()

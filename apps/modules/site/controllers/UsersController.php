@@ -9,7 +9,7 @@
 namespace Site\Controllers;
 
 
-class UsersController extends ControllerBase
+class UsersController extends BaseController
 {
     public function indexAction()
     {

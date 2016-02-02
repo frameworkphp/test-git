@@ -7,6 +7,7 @@ error_reporting(E_ALL&~E_NOTICE);
 (new Phalcon\Debug)->listen();
 
 define('ROOT_URL', realpath('..'));
+define('APP_URL', ROOT_URL . '/apps/');
 define('TABLE_PREFIX', 'tb_');
 define('HOST_HASH', substr(md5($_SERVER['HTTP_HOST']), 0, 12));
 
@@ -20,7 +21,7 @@ define('HOST_HASH', substr(md5($_SERVER['HTTP_HOST']), 0, 12));
     /**
      * Include services
      */
-    require ROOT_URL . '/apps/config/services.php';
+    require APP_URL . 'config/services.php';
 
     /**
      * Handle the request
@@ -35,7 +36,7 @@ define('HOST_HASH', substr(md5($_SERVER['HTTP_HOST']), 0, 12));
     /**
      * Include modules
      */
-    require ROOT_URL . '/apps/config/modules.php';
+    require APP_URL . 'config/modules.php';
 
     echo $application->handle()->getContent();
 //

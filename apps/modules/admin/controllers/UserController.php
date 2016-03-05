@@ -128,6 +128,10 @@ class UserController extends BaseController
                 $user->role = $formData['role'];
                 $user->status = $formData['status'];
 
+                if ($formData['password'] != '') {
+                    $user->password = $this->security->hash($formData['password']);
+                }
+
                 if ($user->update()) {
                     $this->flashSession->success('User ' . $user->name . ' updated.');
 

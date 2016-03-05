@@ -14,11 +14,11 @@ class LoginController extends Controller
 {
     public function initialize()
     {
-        if ($this->auth->getId() > 0 && $this->auth->getRole() == 'Administrator') {
-            $this->response->redirect('admin');
-        } else {
-            $this->auth->remove();
-        }
+//        if ($this->auth->getId() > 0 && $this->auth->getRole() == 'Administrator') {
+//            $this->response->redirect('admin');
+//        } else {
+//            $this->auth->remove();
+//        }
     }
 
     public function indexAction()

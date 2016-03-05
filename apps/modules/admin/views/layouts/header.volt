@@ -33,42 +33,6 @@
                         </div>
                     </a>
                 </li>
-                <li>
-                    <a class="clearfix" href="#">
-                        <img src="img/user2.jpg" alt="User Avatar">
-                        <div class="detail">
-                            <strong>Jane Doe</strong>
-                            <p class="no-margin">
-                                Lorem ipsum dolor sit amet...
-                            </p>
-                            <small class="text-muted"><i class="fa fa-check text-success"></i> 5hr ago</small>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a class="clearfix" href="#">
-                        <img src="img/user.jpg" alt="User Avatar">
-                        <div class="detail">
-                            <strong>Bill Doe</strong>
-                            <p class="no-margin">
-                                Lorem ipsum dolor sit amet...
-                            </p>
-                            <small class="text-muted"><i class="fa fa-reply"></i> Yesterday</small>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a class="clearfix" href="#">
-                        <img src="img/user2.jpg" alt="User Avatar">
-                        <div class="detail">
-                            <strong>Baby Doe</strong>
-                            <p class="no-margin">
-                                Lorem ipsum dolor sit amet...
-                            </p>
-                            <small class="text-muted"><i class="fa fa-reply"></i> 9 Feb 2013</small>
-                        </div>
-                    </a>
-                </li>
                 <li><a href="#">View all messages</a></li>
             </ul>
         </li>
@@ -90,39 +54,6 @@
                         </div>
                     </a>
                 </li>
-                <li>
-                    <a href="#">
-                        <div class="clearfix">
-                            <span class="pull-left">Software Updating</span>
-                            <small class="pull-right text-muted">54%</small>
-                        </div>
-                        <div class="progress progress-striped">
-                            <div class="progress-bar progress-bar-success" style="width:54%"></div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <div class="clearfix">
-                            <span class="pull-left">Database Migration</span>
-                            <small class="pull-right text-muted">23%</small>
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-warning" style="width:23%"></div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <div class="clearfix">
-                            <span class="pull-left">Unit Testing</span>
-                            <small class="pull-right text-muted">92%</small>
-                        </div>
-                        <div class="progress progress-striped active">
-                            <div class="progress-bar progress-bar-danger " style="width:92%"></div>
-                        </div>
-                    </a>
-                </li>
                 <li><a href="#">View all tasks</a></li>
             </ul>
         </li>
@@ -140,42 +71,6 @@
 								</span>
                         <span class="m-left-xs">Server #2 not responding.</span>
                         <span class="time text-muted">Just now</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-								<span class="notification-icon bg-success">
-									<i class="fa fa-plus"></i>
-								</span>
-                        <span class="m-left-xs">New user registration.</span>
-                        <span class="time text-muted">2m ago</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-								<span class="notification-icon bg-danger">
-									<i class="fa fa-bolt"></i>
-								</span>
-                        <span class="m-left-xs">Application error.</span>
-                        <span class="time text-muted">5m ago</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-								<span class="notification-icon bg-success">
-									<i class="fa fa-usd"></i>
-								</span>
-                        <span class="m-left-xs">2 items sold.</span>
-                        <span class="time text-muted">1hr ago</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-								<span class="notification-icon bg-success">
-									<i class="fa fa-plus"></i>
-								</span>
-                        <span class="m-left-xs">New user registration.</span>
-                        <span class="time text-muted">1hr ago</span>
                     </a>
                 </li>
                 <li><a href="#">View all notifications</a></li>

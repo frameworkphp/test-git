@@ -27,6 +27,16 @@
                             </div>
                             <!-- /.col -->
                         </div><!-- /form-group -->
+                        <!-- /form-group -->
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Password</label>
+
+                            <div class="col-md-8">
+                                <input type="password" name="password" class="form-control input-sm"
+                                       placeholder="Password" value="">
+                            </div>
+                            <!-- /.col -->
+                        </div>
                         <div class="form-group">
                             <label class="control-label col-md-2">Name</label>
 

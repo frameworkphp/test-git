@@ -1,5 +1,11 @@
 {
     "require": {
-        "elasticsearch/elasticsearch": "~1.0"
+        "symfony/filesystem": "*"
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Component\\Filesystem\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
     }
 }

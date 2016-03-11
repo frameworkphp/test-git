@@ -8259,3 +8259,16 @@ input[type=radio]:active + .custom-radio {
         color: #fff
     }
 }
+
+.generator-table {
+    display: block;
+    margin: 10px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    color: #555;
+}
+
+.generator-header {
+    font-size: 18px;
+}

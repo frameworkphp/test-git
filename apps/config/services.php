@@ -256,7 +256,7 @@ $di->set('cookies', function () {
 $di->set('crypt', function () {
     $crypt = new Crypt();
     $crypt->setMode(MCRYPT_MODE_CFB);
-    $crypt->setKey('#1Pdj8$=dp?.ak//nHj1V$');
+    $crypt->setKey('#1Pdj8$=dp?.ak#$');
 
     return $crypt;
 });

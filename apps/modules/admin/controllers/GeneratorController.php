@@ -79,7 +79,8 @@ class GeneratorController extends BaseController
                 $directories['views'] = $directories['modules'] . '/views';
 
                 if ($this->validateInput($formParam, $error)) {
-                    var_dump($formParam);die;
+                    //var_dump($formParam);die;
+                    $this->generatorModel($table, $formParam, $directories);
                 } else {
                     $this->flash->outputMessage('error', $error);
                 }
@@ -362,8 +363,141 @@ class GeneratorController extends BaseController
         return true;
     }
 
-    private function generatorModel($formParam)
+    private function generatorModel($table, $formParam, $directories)
     {
+        $search = [];
+        $search['{{MODEL_NAME}}'] = $formParam['modelClass'];
+        $search['{{DATE}}'] = date('d/m/Y', time());
+        $search['{{YEAR}}'] = date('Y', time());
+        $search['{{MODEL_NAMESPACE}}'] = $formParam['modelNamespace'];
+        $search['{{BASE_MODEL}}'] = $formParam['modelExtents'];
+        $search['{{TABLE_NAME}}'] = str_replace(TABLE_PREFIX, '', $table);
 
+        $search['{{FUNCTION_NAME}}'] = $formParam['modelClass'];
+        $search['{{DATE_CREATED}}'] = '';
+        $search['{{DATE_MODIFIED}}'] = '';
+        $search['{{RECORD_PER_PAGE}}'] = $formParam['recordPerPage'];
+
+        // Handel property
+        $columnDefine = '';
+        $tableFields = $this->db->describeColumns($table);
+        foreach ($tableFields as $field) {
+            $columnDefine .= "    /** \n";
+            $nameColumn = $field->getName();
+
+            if ($field->isPrimary()) {
+                $columnDefine .= "    * @Primary \n";
+                $columnDefine .= "    * @Identity \n";
+            }
+
+            if ($field->isNumeric()) {
+                $type = 'integer';
+            } else {
+                $type = 'string';
+            }
+
+            if ($field->isNotNull()) {
+                $nullAble = 'true';
+            } else {
+                $nullAble = 'false';
+            }
+
+            $columnDefine .= '    * @Column(type="' . $type . '", length=' . $field->getSize() . ', nullable=' . $nullAble . ', column="' . $nameColumn . '")' . "\n";
+            $columnDefine .= "    */ \n";
+            $columnDefine .= '    public $' . $formParam['property'][$nameColumn] . ';' . "\n\n";
+
+            if ($formParam['property'][$nameColumn] == 'dateCreated') {
+                $search['{{DATE_CREATED}}'] = '$this->dateCreated = time();';
+            }
+
+            if ($formParam['property'][$nameColumn] == 'dateModified') {
+                $search['{{DATE_MODIFIED}}'] = '$this->dateModified = time();';
+            }
+        }
+
+        // Handel constant
+        $templateFunctionConstant = APP_URL . 'modules/admin/views/generator/format/models_constant.volt';
+
+        $constantDefine = '';
+        $constantFunction = '';
+        foreach ($formParam['constant'] as $key => $value) {
+            if ($value != '') {
+                $constantDefine = "/**\n";
+                $constantDefine .= "    * Declare const\n";
+                $constantDefine .= "    */\n";
+                if (file_exists($templateFunctionConstant)) {
+                    // Search replace
+                    $st = [];
+                    $st['{{COLUMN_NAME}}'] = $formParam['property'][$key];
+                    $st['{{UCFIRST_COLUMN_NAME}}'] = ucfirst($formParam['property'][$key]);
+
+                    $constantGroup = explode(',', $value);
+                    foreach ($constantGroup as $group) {
+                        $constant = explode(':', $group);
+                        $constantDefine .= '    const ' . trim($constant[0]) . ' = ' . trim($constant[1]) . ';' . "\n";
+
+                        $st['{{PROPERTY_CONSTANT_LIST}}'] .= "        self::" . trim($constant[0]) . " => " . "'" . trim($constant[2]) . "'," . "\n";
+                        $st['{{LABEL_CONSTANT_LIST}}'] .= "        self::" . trim($constant[0]) . " => 'label-success'," . "\n";
+                    }
+
+                    $constantDefine .= "\n";
+
+                    $contentConstant = file_get_contents($templateFunctionConstant);
+                    if ($contentConstant != '') {
+                        $constantFunction .= strtr($contentConstant, $st) . "\n\n";
+                    }
+                } else {
+                    $exceptionMsgTmp = 'Can not found volt file for generate related methods for'
+                        . ' constant property (Not found file volt at ' . $templateFunctionConstant . ').';
+                    throw new \Exception($exceptionMsgTmp);
+                }
+            }
+        }
+
+
+        $search['{{PROPERTY}}'] = $columnDefine;
+        $search['{{CONSTANT}}'] = $constantDefine;
+        $search['{{FUNCTION_CONSTANT}}'] = $constantFunction;
+
+        // define searchable
+        $keywordIn = '[';
+        foreach ($formParam['searchable'] as $key => $value) {
+            if ($value == 'on') {
+                $keywordIn .= "'" . $formParam['property'][$key] . "', ";
+            }
+        }
+        $keywordIn .= ']';
+
+        $search['{{KEYWORD_IN}}'] = $keywordIn;
+
+        $validation = '';
+        foreach ($formParam['validatingAddEdit'] as $key => $value) {
+            switch($value) {
+                case 'email':
+                    $validation .= '        $this->validate(new Uniqueness([' . "\n";
+                    $validation .= "            'field' => '" . $formParam['property'][$key] . "'," . "\n";
+                    $validation .= "            'message' => 'Email already exists.'" . "\n";
+                    $validation .= "        ]));\n\n";
+                    break;
+            }
+        }
+
+        $search['{{VALIDATION}}'] = $validation;
+
+        $urlTemplateModel = APP_URL . 'modules/admin/views/generator/format/models.volt';
+        if (file_exists($urlTemplateModel)) {
+            $contentModel = file_get_contents($urlTemplateModel);
+            if ($contentModel != '') {
+                $sourceModel = str_replace(array_keys($search), array_values($search), $contentModel);
+
+                if (file_put_contents($directories['models'] . '/' . $formParam['modelClass'] . '.php', $sourceModel) !== false) {
+
+                }
+            }
+        } else {
+            $exception = 'Not found file template model to generation'
+                . '(Not found file volt at ' . $urlTemplateModel . ').';
+            throw new \Exception($exception);
+        }
     }
 }

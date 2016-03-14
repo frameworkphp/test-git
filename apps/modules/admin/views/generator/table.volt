@@ -109,7 +109,6 @@
                                 <label class="label-checkbox inline">
                                     <input type="checkbox" name="isCreateController" id="inputCreateController" class="regular-checkbox" {% if map['isCreateController'] == true %}checked{% endif %}>
                                     <span class="custom-checkbox info bounceIn animation-delay4"></span>
-
                                 </label>
                             </div><!-- /.col -->
                         </div><!-- /form-group -->

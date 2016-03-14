@@ -78,7 +78,7 @@ class User extends BaseModel
     ];
 
     /**
-     * @var array
+     * @var array name
      */
     public static $statusName = [
         self::STATUS_ACTIVE => 'Active',
@@ -87,7 +87,7 @@ class User extends BaseModel
     ];
 
     /**
-     * @var array
+     * @var array label
      */
     public static $statusLabel = [
         self::STATUS_ACTIVE => 'label-success',

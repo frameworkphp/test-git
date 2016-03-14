@@ -1,6 +1,6 @@
 <div class="padding-md">
     {{ content() }}
-    {{ flashSession.output() }}
+    {{ flash.output() }}
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default table-responsive">
@@ -102,6 +102,16 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div><!-- /form-group -->
+                        <div class="form-group">
+                            <label for="inputCreateController" class="col-lg-2 control-label">Enable create controller</label>
+                            <div class="col-lg-3 form-control-static">
+                                <label class="label-checkbox inline">
+                                    <input type="checkbox" name="isCreateController" id="inputCreateController" class="regular-checkbox" {% if map['isCreateController'] == true %}checked{% endif %}>
+                                    <span class="custom-checkbox info bounceIn animation-delay4"></span>
+
+                                </label>
+                            </div><!-- /.col -->
                         </div><!-- /form-group -->
                         <h3 class="headline generator-header">Controller setting</h3>
                         <div class="form-group">

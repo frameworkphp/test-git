@@ -39,6 +39,7 @@ class GeneratorController extends BaseController
 
     public function tableAction($table)
     {
+        $mapping = [];
         $formParam = [];
         if ($this->db->tableExists($table) && !$this->isIgnoreTable($table)) {
 
@@ -71,13 +72,24 @@ class GeneratorController extends BaseController
             // After submit
             if ($this->request->isPost()) {
                 $formParam = array_merge($formParam, $this->request->getPost());
-                //var_dump($formParam);die;
+
+                $directories['models'] = APP_URL . 'models';
+                $directories['modules'] = APP_URL . 'modules/' . strtolower($formParam['ctrNamespace']);
+                $directories['controllers'] = $directories['modules'] . '/controllers';
+                $directories['views'] = $directories['modules'] . '/views';
+
+                if ($this->validateInput($formParam, $error)) {
+                    var_dump($formParam);die;
+                } else {
+                    $this->flash->outputMessage('error', $error);
+                }
             }
 
+            // Create mapping with formParam
             $mapping = $this->mapping($table, $formParam);
 
         } else {
-            $this->flashSession->error('<strong>Oh snap!</strong> Table not found.');
+            $this->flash->error('<strong>Oh snap!</strong> Table not found.');
         }
         $this->view->setVars([
             'table' => $table,
@@ -272,4 +284,86 @@ class GeneratorController extends BaseController
         return false;
     }
 
+    public function validateInput($formParam, &$error)
+    {
+        // Validate Model
+        if ($formParam['modelNamespace'] == '') {
+            $error[] = 'Model namespace is required';
+        } else {
+            $modelPath = APP_URL . $formParam['modelNamespace'];
+            if (!file_exists($modelPath)) {
+                $error[] = 'Directory contains model not existed. (' . $modelPath . ')';
+            } else if (!is_dir($modelPath)) {
+                $error[] = 'Model Namespace path is not directory.';
+            } else if (!is_writable($modelPath)) {
+                $error[] = 'Directory contains model is not writable. Check Permission and CHMOD...';
+            }
+        }
+
+        if ($formParam['modelClass'] == '') {
+            $error[] = 'Model class is required';
+        }
+
+        if ($formParam['modelExtents'] == '') {
+            $error[] = 'Base class for Model is required';
+        } else {
+            $baseClassPath = $formParam['modelNamespace'] . DIRECTORY_SEPARATOR . $formParam['modelExtents'];
+            if (!class_exists($baseClassPath)) {
+                $error[] = 'Base class for Model is not existed. Check again (' . $baseClassPath . ')';
+            }
+        }
+
+        if ($formParam['tableAlias'] == '') {
+            $error[] = 'Table prefix is required';
+        }
+
+        foreach ($formParam['property'] as $k => $v) {
+            if (strlen($v) == 0) {
+                $error[] = 'Model mapping key <code>' . $k . '</code> is required';
+            }
+        }
+
+        // Validate Controller and template
+        if ($formParam['ctrNamespace'] == '') {
+            $error[] = 'Controller namespace is required';
+        } else {
+            $controllerPath = APP_URL . 'modules' . DIRECTORY_SEPARATOR . $formParam['ctrNamespace'];
+            if (!file_exists($controllerPath)) {
+                $error[] = 'Directory contains controller not existed. (' . $controllerPath . ')';
+            } else if (!is_dir($controllerPath)) {
+                $error[] = 'Controller namespace path is not directory.';
+            } else if (!is_writable($controllerPath)) {
+                $error[] = 'Directory contains controller is not writable. Check Permission and CHMOD...';
+            }
+        }
+
+        if ($formParam['ctrClass'] == '') {
+            $error[] = 'Controller class is required';
+        }
+
+        if ($formParam['ctrExtends'] == '') {
+            $error[] = 'Base class for Controller is required';
+        }
+
+        if ((int)$formParam['recordPerPage'] <= 0) {
+            $error[] = 'Record per page default is required';
+        }
+
+        foreach ($formParam['label'] as $k => $v) {
+            if (strlen($v) == 0) {
+                $error[] = 'Controller mapping key <code>' . $k . '</code> is required';
+            }
+        }
+
+        if (!empty($error)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function generatorModel($formParam)
+    {
+
+    }
 }

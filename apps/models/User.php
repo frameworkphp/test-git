@@ -66,7 +66,7 @@ class User extends BaseModel
      */
     const STATUS_ACTIVE = 1;
     const STATUS_INACTIVE = 2;
-    const STATUS_BANNED =3;
+    const STATUS_BANNED = 3;
 
     /**
      * @var array roles
@@ -159,6 +159,11 @@ class User extends BaseModel
         return false;
     }
 
+    /**
+     * Get record by id
+     * @param $id
+     * @return mixed
+     */
     public static function getUserById($id)
     {
         return self::findFirst([
@@ -179,6 +184,16 @@ class User extends BaseModel
         $cache->delete($key);
     }
 
+    /**
+     * Select the record, Interface with the outside (Controller Action)
+     * @param array $parameter
+     * @param string $columns
+     * @param int $limit
+     * @param int $offset
+     * @param string $sortBy
+     * @param string $sortType
+     * @return mixed
+     */
     public static function getUsers($parameter = [], $columns = '*', $limit = 30, $offset = 1, $sortBy = '', $sortType = '')
     {
         $whereString = '';
@@ -186,11 +201,16 @@ class User extends BaseModel
         $modelName = get_class();
 
         // Begin assign keyword to search
-        if (isset($parameter['keyword']) && $parameter['keyword'] != '' && isset($parameter['keywordIn'])
-            && !empty($parameter['keywordIn'])
-        ) {
+        if (isset($parameter['keyword']) && $parameter['keyword'] != '') {
             $keyword = $parameter['keyword'];
-            $keywordIn = $parameter['keywordIn'];
+
+            // Define default keywordIn
+            $keywordIn = ['name', 'email'];
+
+            // If controller use keywordIn
+            if (isset($parameter['keywordIn']) && !empty($parameter['keywordIn'])) {
+                $keywordIn = $parameter['keywordIn'];
+            }
 
             $whereString .= ($whereString != '' ? ' OR ' : ' (');
             $filter = '';

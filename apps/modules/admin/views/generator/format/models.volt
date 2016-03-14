@@ -13,10 +13,7 @@
 
 namespace {{MODEL_NAMESPACE}};
 
-use Phalcon\Behavior\Imageable;
-use Phalcon\Mvc\Model\Query\Builder as Builder;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
-use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
+{{USE_NAMESPACE}}
 
 class {{MODEL_NAME}} extends {{BASE_MODEL}}
 {
@@ -28,7 +25,7 @@ class {{MODEL_NAME}} extends {{BASE_MODEL}}
     {
         $this->setSource(TABLE_PREFIX . '{{TABLE_NAME}}');
 
-        $config = $this->getDI()->get('config');
+        {{IMAGE_FUNCTION}}
     }
 	
 	public function beforeCreate()
@@ -145,14 +142,7 @@ class {{MODEL_NAME}} extends {{BASE_MODEL}}
             'order' => [$modelName . '.' . $order . '']
         ];
 
-        $builder = new Builder($params);
-        $pagination = new PaginatorQueryBuilder([
-            'builder' => $builder,
-            'limit' => $limit,
-            'page' => $offset
-        ]);
-
-        return $pagination->getPaginate();
+        return parent::getList($params, $limit, $offset);
     }
 	
 	{{FUNCTION_CONSTANT}}

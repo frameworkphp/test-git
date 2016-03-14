@@ -191,7 +191,7 @@
                                                 <option value="notNeed" {% if map['validatingAddEdit'] == 'notNeed'%}selected{% endif %}>Not need</option>
                                                 <option value="email" {% if map['validatingAddEdit'] == 'email'%}selected{% endif %}>Email Address</option>
                                                 <option value="notEmpty" {% if map['validatingAddEdit'] == 'notEmpty'%}selected{% endif %}>Not Empty String</option>
-                                                <option value="greaterThanZero" {% if map['validatingAddEdit'] == 'greaterThanZero'%}selected{% endif %}>Number greater than zero (0)</option>
+                                                <option value="isNumber" {% if map['validatingAddEdit'] == 'isNumber'%}selected{% endif %}>Is number</option>
                                             </select>
                                         </td>
                                     </tr>

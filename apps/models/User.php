@@ -3,9 +3,7 @@
 namespace Models;
 
 use Phalcon\Behavior\Imageable;
-use Phalcon\Mvc\Model\Query\Builder as Builder;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
-use Phalcon\Paginator\Adapter\QueryBuilder as PaginatorQueryBuilder;
 
 class User extends BaseModel
 {
@@ -253,14 +251,7 @@ class User extends BaseModel
             'order' => [$modelName . '.' . $order . '']
         ];
 
-        $builder = new Builder($params);
-        $pagination = new PaginatorQueryBuilder([
-            'builder' => $builder,
-            'limit' => $limit,
-            'page' => $offset
-        ]);
-
-        return $pagination->getPaginate();
+        return parent::getList($params, $limit, $offset);
     }
 
     public function getRoleName()

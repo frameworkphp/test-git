@@ -374,9 +374,12 @@ class GeneratorController extends BaseController
         $search['{{TABLE_NAME}}'] = str_replace(TABLE_PREFIX, '', $table);
 
         $search['{{FUNCTION_NAME}}'] = $formParam['modelClass'];
+        $search['{{RECORD_PER_PAGE}}'] = $formParam['recordPerPage'];
+        $search['{{USE_NAMESPACE}}'] = '';
+        $search['{{IMAGE_FUNCTION}}'] = '';
         $search['{{DATE_CREATED}}'] = '';
         $search['{{DATE_MODIFIED}}'] = '';
-        $search['{{RECORD_PER_PAGE}}'] = $formParam['recordPerPage'];
+
 
         // Handel property
         $columnDefine = '';
@@ -386,8 +389,8 @@ class GeneratorController extends BaseController
             $nameColumn = $field->getName();
 
             if ($field->isPrimary()) {
-                $columnDefine .= "    * @Primary \n";
-                $columnDefine .= "    * @Identity \n";
+                $columnDefine .= "     * @Primary \n";
+                $columnDefine .= "     * @Identity \n";
             }
 
             if ($field->isNumeric()) {
@@ -402,9 +405,19 @@ class GeneratorController extends BaseController
                 $nullAble = 'false';
             }
 
-            $columnDefine .= '    * @Column(type="' . $type . '", length=' . $field->getSize() . ', nullable=' . $nullAble . ', column="' . $nameColumn . '")' . "\n";
-            $columnDefine .= "    */ \n";
-            $columnDefine .= '    public $' . $formParam['property'][$nameColumn] . ';' . "\n\n";
+            $columnDefine .= '     * @Column(type="' . $type . '", length=' . $field->getSize() . ', nullable=' . $nullAble . ', column="' . $nameColumn . '")' . "\n";
+            $columnDefine .= "     */ \n";
+            $columnDefine .= '    public $' . $formParam['property'][$nameColumn];
+
+            if ($field->getDefault() != null) {
+                if (is_numeric($field->getDefault())) {
+                    $columnDefine .= " = " . $field->getDefault() . ";" . "\n\n";
+                } else {
+                    $columnDefine .= " = '" . $field->getDefault() . "';" . "\n\n";
+                }
+            } else {
+                $columnDefine .= ';' . "\n\n";
+            }
 
             if ($formParam['property'][$nameColumn] == 'dateCreated') {
                 $search['{{DATE_CREATED}}'] = '$this->dateCreated = time();';
@@ -423,8 +436,8 @@ class GeneratorController extends BaseController
         foreach ($formParam['constant'] as $key => $value) {
             if ($value != '') {
                 $constantDefine = "/**\n";
-                $constantDefine .= "    * Declare const\n";
-                $constantDefine .= "    */\n";
+                $constantDefine .= "     * Declare const\n";
+                $constantDefine .= "     */\n";
                 if (file_exists($templateFunctionConstant)) {
                     // Search replace
                     $st = [];
@@ -460,26 +473,53 @@ class GeneratorController extends BaseController
         $search['{{FUNCTION_CONSTANT}}'] = $constantFunction;
 
         // define searchable
-        $keywordIn = '[';
+        $keywordIn = [];
         foreach ($formParam['searchable'] as $key => $value) {
             if ($value == 'on') {
-                $keywordIn .= "'" . $formParam['property'][$key] . "', ";
+                $keywordIn[] = "'" . $formParam['property'][$key] . "'";
             }
         }
-        $keywordIn .= ']';
 
-        $search['{{KEYWORD_IN}}'] = $keywordIn;
+        $search['{{KEYWORD_IN}}'] = '[' . implode(', ', $keywordIn) . ']';
 
         $validation = '';
+        $validationUseNamespace = [];
         foreach ($formParam['validatingAddEdit'] as $key => $value) {
             switch($value) {
-                case 'email':
+                case 'unique':
                     $validation .= '        $this->validate(new Uniqueness([' . "\n";
                     $validation .= "            'field' => '" . $formParam['property'][$key] . "'," . "\n";
-                    $validation .= "            'message' => 'Email already exists.'" . "\n";
+                    $validation .= "            'message' => '" . $formParam['label'][$key] . " is already used.'" . "\n";
                     $validation .= "        ]));\n\n";
+                    $validationUseNamespace[] = 'use Phalcon\Mvc\Model\Validator\Uniqueness;';
+                    break;
+                case 'notEmpty':
+                    $validation .= '        $this->validate(new PresenceOf([' . "\n";
+                    $validation .= "            'field' => '" . $formParam['property'][$key] . "'," . "\n";
+                    $validation .= "            'message' => '" . $formParam['label'][$key] . " is required.'" . "\n";
+                    $validation .= "        ]));\n\n";
+                    $validationUseNamespace[] = 'use Phalcon\Mvc\Model\Validator\PresenceOf;';
+                    break;
+                case 'email':
+                    $validation .= '        $this->validate(new Email([' . "\n";
+                    $validation .= "            'field' => '" . $formParam['property'][$key] . "'," . "\n";
+                    $validation .= "            'message' => '" . $formParam['label'][$key] . " is invalid.'" . "\n";
+                    $validation .= "        ]));\n\n";
+                    $validationUseNamespace[] = 'use Phalcon\Mvc\Model\Validator\Email;';
+                    break;
+                case 'isNumber':
+                    $validation .= '        $this->validate(new Numericality([' . "\n";
+                    $validation .= "            'field' => '" . $formParam['property'][$key] . "'," . "\n";
+                    $validation .= "            'message' => '" . $formParam['label'][$key] . " is not numeric.'" . "\n";
+                    $validation .= "        ]));\n\n";
+                    $validationUseNamespace[] = 'use Phalcon\Mvc\Model\Validator\Numericality;';
                     break;
             }
+        }
+
+        if ($validation != '') {
+            $validation .= '        return !$this->validationHasFailed();';
+            $search['{{USE_NAMESPACE}}'] .= implode("\n", array_unique($validationUseNamespace));
         }
 
         $search['{{VALIDATION}}'] = $validation;

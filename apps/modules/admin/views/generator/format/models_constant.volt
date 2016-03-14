@@ -1,14 +1,14 @@
 
     /**
-    * @var array name
-    */
+     * @var array name
+     */
     public static ${{COLUMN_NAME}}Name = [
 {{PROPERTY_CONSTANT_LIST}}
     ];
 
     /**
-    * @var array label
-    */
+     * @var array label
+     */
     public static ${{COLUMN_NAME}}Label = [
 {{LABEL_CONSTANT_LIST}}
     ];

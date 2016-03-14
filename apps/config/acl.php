@@ -39,7 +39,8 @@ return [
         'Admin' => [
             'index' => '*',
             'user' => '*',
-            'login' => '*'
+            'login' => '*',
+            'generator' => '*'
         ]
     ]
 ];

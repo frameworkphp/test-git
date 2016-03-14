@@ -7,7 +7,7 @@ error_reporting(E_ALL&~E_NOTICE);
 (new Phalcon\Debug)->listen();
 
 define('ROOT_URL', realpath('..'));
-define('APP_URL', ROOT_URL . '/apps/');
+define('APP_URL', ROOT_URL . DIRECTORY_SEPARATOR . 'apps' . DIRECTORY_SEPARATOR);
 define('TABLE_PREFIX', 'tb_');
 define('HOST_HASH', substr(md5($_SERVER['HTTP_HOST']), 0, 12));
 

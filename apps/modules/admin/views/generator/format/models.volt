@@ -19,7 +19,7 @@ class {{MODEL_NAME}} extends {{BASE_MODEL}}
 {
 {{PROPERTY}}
 
-    {{CONSTANT}}
+{{CONSTANT}}
 
     public function initialize()
     {

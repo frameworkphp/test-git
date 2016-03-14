@@ -435,7 +435,7 @@ class GeneratorController extends BaseController
         $constantFunction = '';
         foreach ($formParam['constant'] as $key => $value) {
             if ($value != '') {
-                $constantDefine = "/**\n";
+                $constantDefine .= "    /**\n";
                 $constantDefine .= "     * Declare const\n";
                 $constantDefine .= "     */\n";
                 if (file_exists($templateFunctionConstant)) {
@@ -447,7 +447,12 @@ class GeneratorController extends BaseController
                     $constantGroup = explode(',', $value);
                     foreach ($constantGroup as $group) {
                         $constant = explode(':', $group);
-                        $constantDefine .= '    const ' . trim($constant[0]) . ' = ' . trim($constant[1]) . ';' . "\n";
+                        if (is_numeric(trim($constant[1]))) {
+                            $constant[1] = trim($constant[1]);
+                        } else {
+                            $constant[1] = "'" . trim($constant[1]) . "'";
+                        }
+                        $constantDefine .= '    const ' . trim($constant[0]) . ' = ' . $constant[1] . ';' . "\n";
 
                         $st['{{PROPERTY_CONSTANT_LIST}}'] .= "        self::" . trim($constant[0]) . " => " . "'" . trim($constant[2]) . "'," . "\n";
                         $st['{{LABEL_CONSTANT_LIST}}'] .= "        self::" . trim($constant[0]) . " => 'label-success'," . "\n";
@@ -531,13 +536,11 @@ class GeneratorController extends BaseController
                 $sourceModel = str_replace(array_keys($search), array_values($search), $contentModel);
 
                 if (file_put_contents($directories['models'] . '/' . $formParam['modelClass'] . '.php', $sourceModel) !== false) {
-
+                    $this->flash->success('Generate Model success');
                 }
             }
         } else {
-            $exception = 'Not found file template model to generation'
-                . '(Not found file volt at ' . $urlTemplateModel . ').';
-            throw new \Exception($exception);
+            $this->flash->error("Not found file template model to generation (Not found file volt at ' . $urlTemplateModel . ')");
         }
     }
 }

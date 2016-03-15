@@ -543,4 +543,9 @@ class GeneratorController extends BaseController
             $this->flash->error("Not found file template model to generation (Not found file volt at ' . $urlTemplateModel . ')");
         }
     }
+
+    public function generatorController($table, $formParam, $directories)
+    {
+
+    }
 }

@@ -80,7 +80,8 @@ class GeneratorController extends BaseController
 
                 if ($this->validateInput($formParam, $error)) {
                     //var_dump($formParam);die;
-                    $this->generatorModel($table, $formParam, $directories);
+                    // $this->generatorModel($table, $formParam, $directories);
+                    $this->generatorController($table, $formParam, $directories);
                 } else {
                     $this->flash->outputMessage('error', $error);
                 }
@@ -546,6 +547,86 @@ class GeneratorController extends BaseController
 
     public function generatorController($table, $formParam, $directories)
     {
+        $search = [];
+        $search['{{CLASS_NAME}}'] = $formParam['ctrClass'];
+        $search['{{MODEL_NAME}}'] = $formParam['modelClass'];
+        $search['{{DATE}}'] = date('d/m/Y', time());
+        $search['{{YEAR}}'] = date('Y', time());
+        $search['{{CONTROLLER_NAMESPACE}}'] = $formParam['ctrNamespace'] . '\Controllers';
+        $search['{{BASE_CONTROLLER}}'] = $formParam['ctrExtends'];
+        $search['{{TABLE_NAME}}'] = str_replace(TABLE_PREFIX, '', $table);
+        $search['{{VARIABLE_NAME}}'] = lcfirst($formParam['modelClass']);
+
+        $search['{{FUNCTION_NAME}}'] = $formParam['modelClass'];
+        $search['{{RECORD_PER_PAGE}}'] = $formParam['recordPerPage'];
+        $search['{{USE_NAMESPACE}}'] = 'use ' . $formParam['modelNamespace'] . '\\' . $formParam['modelClass'] . ';';
+
+
+        // define searchable
+        $keywordIn = [];
+        foreach ($formParam['searchable'] as $key => $value) {
+            if ($value == 'on') {
+                $keywordIn[] = "'" . $formParam['property'][$key] . "'";
+            }
+        }
+
+        $search['{{KEYWORD_IN}}'] = '[' . implode(', ', $keywordIn) . ']';
+
+        // Filter
+        $filterGet = '';
+        $filterParam = '';
+        $filterAssign = '';
+        foreach ($formParam['filterable'] as $key => $value) {
+            if ($value == 'on') {
+                $filterGet .= '        $' . $formParam['property'][$key] . ' = $this->request->getQuery(\'' . strtolower($formParam['property'][$key]) . '\', \'string\', \'\');' . "\n";
+
+                $filterParam .= "        if ($" . $formParam['property'][$key] . "!= '') {\n";
+                $filterParam .= '            $parameter[\'' . $formParam['property'][$key] .'\'] = $' . $formParam['property'][$key] . ';' . "\n";
+                $filterParam .= '            $queryUrl .= ($queryUrl == \'\' ? \'?\' : \'&\') . \'' . strtolower($formParam['property'][$key]) . '=\' . $' . $formParam['property'][$key] .';' . "\n";
+                $filterParam .= "        } \n\n";
+
+                $filterAssign .= '            \'' . $formParam['property'][$key] . '\' => ' . $formParam['modelClass'] .'::$' . $formParam['property'][$key] . 'Name,' . "\n";
+            }
+        }
+
+        $search['{{FILTER_GET}}'] = $filterGet;
+        $search['{{FILTER_PARAM}}'] = $filterParam;
+        $search['{{FILTER_ASSIGN}}'] = $filterAssign;
+
+
+        // add assign property
+        $search['{{ADD_ASSIGN_PROPERTY}}'] = '';
+        foreach ($formParam['addEditExclude'] as $key => $value) {
+            if ($value == 'on') {
+                if ($formParam['property'][$key] == 'password') {
+                    $search['{{ADD_ASSIGN_PROPERTY}}'] .= '                $' . $search['{{VARIABLE_NAME}}'] . '->'
+                        . $formParam['property'][$key] . ' = $this->security->hash($formData[\''
+                        . $formParam['property'][$key] . '\'])' . "\n";
+                } else {
+                    $search['{{ADD_ASSIGN_PROPERTY}}'] .= '                $' . $search['{{VARIABLE_NAME}}'] . '->'
+                        . $formParam['property'][$key] . ' = $formData[\''
+                        . $formParam['property'][$key] . '\'];' . "\n";
+                }
+            }
+        }
+
+        $search['{{REDIRECT_INDEX}}'] = strtolower($formParam['ctrNamespace'] . '/' . $search['{{VARIABLE_NAME}}']);
+
+        $search['{{PROPERTY_NAME}}'] = 'name';
+
+        $fileTemplateController = APP_URL . 'modules/admin/views/generator/format/admin_controller.volt';
+        if (file_exists($fileTemplateController)) {
+            $contentController = file_get_contents($fileTemplateController);
+            if ($contentController != '') {
+                $sourceController = str_replace(array_keys($search), array_values($search), $contentController);
+
+                if (file_put_contents($directories['controllers'] . '/' . $formParam['ctrClass'] . '.php', $sourceController) !== false) {
+                    $this->flash->success('Generate controller success');
+                }
+            }
+        } else {
+            $this->flash->error("Not found file template controller to generation (Not found file volt at ' . $fileTemplateController . ')");
+        }
 
     }
 }

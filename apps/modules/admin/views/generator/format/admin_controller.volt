@@ -41,7 +41,9 @@ class {{CLASS_NAME}} extends {{BASE_CONTROLLER}}
         ];
 
         // Get and add filter in parameter
-        {{FILTER_INDEX}}
+{{FILTER_GET}}
+
+{{FILTER_PARAM}}
 
         // Get list {{VARIABLE_NAME}}s
         ${{VARIABLE_NAME}}s = {{MODEL_NAME}}::get{{FUNCTION_NAME}}s($parameter, '*', $this->recordPerPage, $page, $sort, $dir);
@@ -67,7 +69,7 @@ class {{CLASS_NAME}} extends {{BASE_CONTROLLER}}
             'orderUrl' => $orderUrl,
             'pagination' => ${{VARIABLE_NAME}}s,
             'paginateUrl' => $paginateUrl,
-            {{FILTER_ASSIGN}}
+{{FILTER_ASSIGN}}
         ]);
         $this->tag->prependTitle('Manager {{VARIABLE_NAME}}');
     }
@@ -79,7 +81,7 @@ class {{CLASS_NAME}} extends {{BASE_CONTROLLER}}
             if ($this->security->checkToken()) {
                 $formData = $this->request->getPost();
                 ${{VARIABLE_NAME}} = new {{MODEL_NAME}}();
-                {{ADD_ASSIGN_PROPERTY}}
+{{ADD_ASSIGN_PROPERTY}}
 
                 if (${{VARIABLE_NAME}}->create()) {
                     $formData = [];
@@ -92,7 +94,7 @@ class {{CLASS_NAME}} extends {{BASE_CONTROLLER}}
 
         $this->view->setVars([
             'formData' => $formData,
-            {{CONSTANT_ASSIGN}}
+{{FILTER_ASSIGN}}
         ]);
         $this->tag->prependTitle('Add {{VARIABLE_NAME}}');
     }
@@ -105,7 +107,7 @@ class {{CLASS_NAME}} extends {{BASE_CONTROLLER}}
             if ($this->security->checkToken()) {
                 $formData = $this->request->getPost();
 
-                {{EDIT_ASSIGN_PROPERTY}}
+{{ADD_ASSIGN_PROPERTY}}
 
                 if (${{VARIABLE_NAME}}->update()) {
                     $this->flashSession->success('{{FUNCTION_NAME}} ' . ${{VARIABLE_NAME}}->{{PROPERTY_NAME}} . ' updated.');
@@ -115,7 +117,7 @@ class {{CLASS_NAME}} extends {{BASE_CONTROLLER}}
                     } else {
                         $redirect = '{{REDIRECT_INDEX}}';
                     }
-                    $this->response->redirect($redirect . '#_' . ${{VARIABLE_NAME}}->id);
+                    $this->response->redirect($redirect . '#_' . $id);
                 } else {
                     $this->flash->outputMessage('error', ${{VARIABLE_NAME}}->getMessages());
                 }
@@ -124,7 +126,7 @@ class {{CLASS_NAME}} extends {{BASE_CONTROLLER}}
 
         $this->view->setVars([
             '{{VARIABLE_NAME}}' => ${{VARIABLE_NAME}},
-            {{CONSTANT_ASSIGN}}
+{{FILTER_ASSIGN}}
             'redirect' => $this->request->getHTTPReferer()
         ]);
         $this->tag->prependTitle('Edit {{VARIABLE_NAME}}');

@@ -19,7 +19,7 @@
                 </div>
 
                 <form method="post" name="appForm">
-                    {% if users.total_items > 0 %}
+                    {% if {{VARIABLE_NAME}}s.total_items > 0 %}
                     <table class="table table-striped" id="responsiveTable">
                         <thead>
                         <tr>
@@ -39,10 +39,10 @@
 
                     <div class="panel-footer clearfix">
                         <div class="pull-left form-filter">
-                                <select name="selectBulkAction" class="input-sm form-control">
-                                    <option value="0">Bulk action</option>
-                                    <option value="deletes">Delete</option>
-                                </select>
+                            <select name="selectBulkAction" class="input-sm form-control">
+                                <option value="0">Bulk action</option>
+                                <option value="deletes">Delete</option>
+                            </select>
                         </div>
                         <a id="bulk-action" class="btn btn-default btn-sm pull-left">Apply</a>
                         <div class="pull-right">

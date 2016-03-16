@@ -30,7 +30,7 @@ class UserController extends BaseController
         $currentUrl = substr($this->router->getRewriteUri(), 1);
         $queryUrl = '';
         if ($keyword != '') {
-            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'q=' . $keyword;
+            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'q=' . str_replace(' ', '+', $keyword);
         }
 
         // Add keyword parameter

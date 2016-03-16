@@ -293,7 +293,7 @@ $(function () {
         }
 
         // Get param filter
-        $('select[name^="filter"]').each(function() {
+        $('select[name^="filter"]').each(function () {
             var type = $(this).attr('data-type');
             if ($(this).val() != 'all') {
                 queryUrl[type] = $(this).val();
@@ -311,12 +311,52 @@ $(function () {
             queryUrl['dir'] = dir;
         }
 
-        var str = jQuery.param( queryUrl );
+        var str = jQuery.param(queryUrl);
         if (str != '') {
             window.location.href = '?' + str;
         } else {
             window.location.href = getUrlPath();
         }
+    });
+
+    $("#filter").change(function () {
+        var type = $(this).val();
+        // Get param filter
+        $('select[name^="filter"]').each(function () {
+            var obj = $(this);
+            if ($(this).attr('data-type') == type) {
+                obj.parent().removeClass('hide');
+                obj.parent().addClass('inline');
+            } else {
+                obj.parent().removeClass('inline');
+                obj.parent().addClass('hide');
+            }
+        });
+
+        $('input[name^="filter"]').each(function () {
+            var obj = $(this);
+            if ($(this).attr('data-type') == type) {
+                obj.parent().removeClass('hide');
+                obj.parent().addClass('inline');
+            } else {
+                obj.parent().removeClass('inline');
+                obj.parent().addClass('hide');
+            }
+        });
+    });
+
+    $('.dropdown-filter-box input, .dropdown-filter-box select, .dropdown-filter-box label').click(function (e) {
+        e.stopPropagation();
+    });
+
+    $('#search').bind('keypress', function (e) {
+        if (e.keyCode == 13) {
+            search();
+        }
+    });
+
+    $('#btnSearch').click(function() {
+        search();
     });
 
 });
@@ -371,7 +411,33 @@ function getAbsolutePath() {
     return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
 }
 
-function getUrlPath()
-{
+function getUrlPath() {
     return window.location.origin + window.location.pathname;
+}
+
+function search()
+{
+    var queryUrl = {};
+    var keyword = $('input[name^="q"]').val();
+    if (keyword != '') {
+        queryUrl['q'] = keyword;
+    }
+
+    // Get param sort
+    var sort = $('input[name^="sort"]').val();
+    var dir = $('input[name^="dir"]').val();
+    if (sort != '') {
+        queryUrl['sort'] = sort;
+    }
+
+    if (dir != '') {
+        queryUrl['dir'] = dir;
+    }
+
+    var str = jQuery.param(queryUrl);
+    if (str != '') {
+        window.location.href = '?' + str;
+    } else {
+        window.location.href = getUrlPath();
+    }
 }

@@ -13,43 +13,60 @@
                     </div>
                 </div>
                 <div class="panel-body clearfix">
-                    <div class="col-md-2 form-filter">
-                        <select name="filter[role]" data-type="role" class="input-sm form-control">
-                            <option value="all">Select a role</option>
-                            {% for name, value in roles %}
-                                {% if name == parameter['role'] %}
-                                    <option selected value="{{name}}">{{value}}</option>
-                                {% else %}
-                                    <option value="{{name}}">{{value}}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
+                        <div class="input-group">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">Filter users <span class="caret"></span></button>
+                                <div class="dropdown-menu dropdown-filter-box " >
+                                    <h3>Show all user where:</h3>
+                                    <div class="form-group inline">
+                                        <select id="filter" class="input-sm custom-form">
+                                            <option value="">Select a filter..</option>
+                                            <option value="email">Email</option>
+                                            <option value="role">Role</option>
+                                            <option value="status">Status</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group hide">
+                                        <input type="text" name="filter[email]" data-type="email" value="" class="input-sm custom-form">
+                                    </div>
+                                    <div class="form-group hide">
+                                        <select name="filter[status]" data-type="status" class="input-sm custom-form">
+                                            <option value="all">Select a user state</option>
+                                            {% for id, value in status %}
+                                                {% if id == parameter['status'] %}
+                                                    <option selected value="{{id}}">{{value}}</option>
+                                                {% else %}
+                                                    <option value="{{id}}">{{value}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group hide">
+                                        <select name="filter[role]" data-type="role" class="input-sm custom-form">
+                                            <option value="all">Select a role</option>
+                                            {% for name, value in roles %}
+                                                {% if name == parameter['role'] %}
+                                                    <option selected value="{{name}}">{{value}}</option>
+                                                {% else %}
+                                                    <option value="{{name}}">{{value}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group inline">
+                                        <input type="button" class="btn btn-sm btn-info inline" value="Add Filter">
+                                    </div>
+                                </div>
+                            </div>
 
-                    <div class="col-md-2 form-filter">
-                        <select name="filter[status]" data-type="status" class="input-sm form-control">
-                            <option value="all">Select a user state</option>
-                            {% for id, value in status %}
-                                {% if id == parameter['status'] %}
-                                    <option selected value="{{id}}">{{value}}</option>
-                                {% else %}
-                                    <option value="{{id}}">{{value}}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
+                                <input type="text" name="q" id="search" class="form-control input-sm" value="{{ parameter['keyword'] }}" placeholder="Search user by name, email..." aria-controls="dataTable">
+                                <span class="input-group-btn">
+                                    <button id="btnSearch" class="btn btn-default btn-sm" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
 
-                    <a id="form-filter" class="btn btn-default btn-sm pull-left">Filter</a>
-
-                    <form method="get">
-                        <div class="col-md-4 input-group pull-right">
-                            <input type="text" name="q" class="form-control input-sm" value="{{ parameter['keyword'] }}" placeholder="search user by name, email..." aria-controls="dataTable"><span
-                                class="input-group-btn">
-                            <button class="btn btn-default btn-sm" type="submit">
-                                <i class="fa fa-search"></i>
-                            </button></span>
                         </div>
-                    </form>
                 </div>
 
                 <form method="post" name="appForm">

@@ -560,22 +560,27 @@ class GeneratorController extends BaseController
         $search['{{FUNCTION_NAME}}'] = $formParam['modelClass'];
         $search['{{RECORD_PER_PAGE}}'] = $formParam['recordPerPage'];
         $search['{{USE_NAMESPACE}}'] = 'use ' . $formParam['modelNamespace'] . '\\' . $formParam['modelClass'] . ';';
-
+        $search['{{CONTROLLER_NAME}}'] = str_replace('_', ' ', $search['{{TABLE_NAME}}']);
 
         // define searchable
         $keywordIn = [];
+        $placeholderSearch = [];
         foreach ($formParam['searchable'] as $key => $value) {
             if ($value == 'on') {
                 $keywordIn[] = "'" . $formParam['property'][$key] . "'";
+                $placeholderSearch[] = $formParam['label'][$key];
             }
         }
 
         $search['{{KEYWORD_IN}}'] = '[' . implode(', ', $keywordIn) . ']';
+        $search['{{PLACEHOLDER_SEARCH}}'] = implode(', ', $placeholderSearch);
 
         // Filter
         $filterGet = '';
         $filterParam = '';
         $filterAssign = '';
+        $filterView = '';
+        $filterOption = '';
         foreach ($formParam['filterable'] as $key => $value) {
             if ($value == 'on') {
                 $filterGet .= '        $' . $formParam['property'][$key] . ' = $this->request->getQuery(\'' . strtolower($formParam['property'][$key]) . '\', \'string\', \'\');' . "\n";
@@ -598,12 +603,42 @@ class GeneratorController extends BaseController
                 if ($formParam['constant'][$key] != '') {
                     $filterAssign .= '            \'' . $formParam['property'][$key] . '\' => ' . $formParam['modelClass'] . '::$' . $formParam['property'][$key] . 'Name,' . "\n";
                 }
+
+                // View
+                if ($formParam['constant'][$key] == '') {
+                    $filterView .= '<div class="form-group hide">
+                                    <input type="text" name="filter[' . $formParam['property'][$key] . ']" data-type="' . $formParam['property'][$key] . '" value="{{parameter[\'' . $formParam['property'][$key] . '\']}}" class="input-sm custom-form">
+                                </div>' . "\n\t\t\t\t\t\t\t\t";
+                } else {
+                    $filterView .= '<div class="form-group hide">
+                                        <select name="filter[' . $formParam['property'][$key] . ']" data-type="' . $formParam['property'][$key] . '" class="input-sm custom-form">
+                                            <option value="all">Select a ' . $formParam['label'][$key] . '</option>
+                                            {% for id, value in ' . $formParam['property'][$key] . ' %}
+                                                {% if id == parameter[\'' . $formParam['property'][$key] . '\'] %}
+                                                    <option selected value="{{id}}">{{value}}</option>
+                                                {% else %}
+                                                    <option value="{{id}}">{{value}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>' . "\n\t\t\t\t\t\t\t\t";
+                }
+
+                $filterOption .= '                                        <option value="' . $formParam['property'][$key] . '">' . $formParam['label'][$key] . '</option>' . "\n";
             }
+        }
+
+        if ($filterView != '') {
+            $filterView .= '<div class="form-group inline">
+                                    <input type="button" class="btn btn-sm btn-info inline addFilter" value="Add Filter">
+                            </div>';
         }
 
         $search['{{FILTER_GET}}'] = $filterGet;
         $search['{{FILTER_PARAM}}'] = $filterParam;
         $search['{{FILTER_ASSIGN}}'] = $filterAssign;
+        $search['{{FILTER_VIEW}}'] = $filterView;
+        $search['{{FILTER_OPTION}}'] = $filterOption;
 
 
         // add assign property
@@ -628,6 +663,39 @@ class GeneratorController extends BaseController
 
         $search['{{PROPERTY_NAME}}'] = 'name';
 
+        $tableHeader = '';
+        foreach ($formParam['property'] as $key => $value) {
+            if (isset($formParam['sortable'][$key]) && $formParam['sortable'][$key] == 'on') {
+                $tableHeader .= '<th class="{% if sort == \'' . $value . '\' %}sorted{% else %}sortable{% endif %}">
+                                <a href="{{url(orderUrl)}}sort=' . $value . '&{% if sort == \'' . $value . '\' and dir|lower == \'asc\' %}dir=desc{% else %}dir=asc{% endif %}{% if pagination.current > 1 %}&page={{pagination.current}}{% endif %}">
+                                    ' . $formParam['label'][$key] . ' {% if sort == \'' . $value . '\' and dir|lower == \'desc\' %}<i class="fa fa-caret-down"></i>{% else %}<i class="fa fa-caret-up"></i>{% endif %}
+                                </a>
+                            </th>' . "\n\t\t\t\t\t\t\t";
+            } else {
+                $tableHeader .= '<th>' . $formParam['label'][$key] . '</th>' . "\n\t\t\t\t\t\t\t";
+            }
+        }
+
+        $search['{{TABLE_HEADER_VIEW}}'] = $tableHeader;
+
+
+        $tableBody = '';
+        foreach ($formParam['property'] as $key => $value) {
+            if ($value == 'dateCreated') {
+                $tableBody .= '<td>{{ date(\'M d, Y\', ' . $search['{{VARIABLE_NAME}}'] . '.dateCreated) }}</td>' . "\n\t\t\t\t\t\t";
+            } else if ($value == 'dateModified') {
+                $tableBody .= '<td>{{ date(\'M d, Y\', ' . $search['{{VARIABLE_NAME}}'] . '.dateModified) }}</td>' . "\n\t\t\t\t\t\t";
+            } else if($formParam['constant'][$key] != '') {
+                $tableBody .= '<td><span class="label {{' . $search['{{VARIABLE_NAME}}'] . '.get' . ucfirst($value). 'Label()}}">{{' . $search['{{VARIABLE_NAME}}'] . '.get' . ucfirst($value). 'Name()}}</span></td>' . "\n\t\t\t\t\t\t";
+            } else {
+                $tableBody .= '<td>{{' . $search['{{VARIABLE_NAME}}'] . '.' . $value . '}}</td>' . "\n\t\t\t\t\t\t";
+            }
+        }
+
+        $search['{{TABLE_BODY_VIEW}}'] = $tableBody;
+
+
+        // Generation controller
         $fileTemplateController = APP_URL . 'modules/admin/views/generator/format/admin_controller.volt';
         if (file_exists($fileTemplateController)) {
             $contentController = file_get_contents($fileTemplateController);
@@ -635,11 +703,29 @@ class GeneratorController extends BaseController
                 $sourceController = str_replace(array_keys($search), array_values($search), $contentController);
 
                 if (file_put_contents($directories['controllers'] . '/' . $formParam['ctrClass'] . '.php', $sourceController) !== false) {
-                    $this->flash->success('Generate controller success');
+                    $this->flash->success('Generate ' . $formParam['ctrClass'] . '.php' . ' success');
                 }
             }
         } else {
             $this->flash->error("Not found file template controller to generation (Not found file volt at ' . $fileTemplateController . ')");
+        }
+
+        $folderView = $directories['views'] . '/' . strtolower($formParam['modelClass']);
+        if (!is_dir($folderView)) {
+            mkdir($folderView);
+        }
+        // Generation admin_index
+        $fileTemplateIndex = APP_URL . 'modules/admin/views/generator/format/admin_index.volt';
+        if (file_exists($fileTemplateIndex)) {
+            $contentIndex = file_get_contents($fileTemplateIndex);
+            if ($contentIndex != '') {
+                $sourceIndex = str_replace(array_keys($search), array_values($search), $contentIndex);
+                if (file_put_contents($folderView . '/index.volt', $sourceIndex) !== false) {
+                    $this->flash->success('Generate index.volt success');
+                }
+            }
+        } else {
+            $this->flash->error("Not found file template index to generation (Not found file volt at ' . $fileTemplateIndex . ')");
         }
 
     }

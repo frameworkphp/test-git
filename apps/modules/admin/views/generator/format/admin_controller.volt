@@ -41,10 +41,10 @@ class {{CLASS_NAME}} extends {{BASE_CONTROLLER}}
         ];
 
         // Get and add filter in parameter
+        $filterTag = [];
 {{FILTER_GET}}
 
 {{FILTER_PARAM}}
-
         // Get list {{VARIABLE_NAME}}s
         ${{VARIABLE_NAME}}s = {{MODEL_NAME}}::get{{FUNCTION_NAME}}s($parameter, '*', $this->recordPerPage, $page, $sort, $dir);
 
@@ -69,6 +69,7 @@ class {{CLASS_NAME}} extends {{BASE_CONTROLLER}}
             'orderUrl' => $orderUrl,
             'pagination' => ${{VARIABLE_NAME}}s,
             'paginateUrl' => $paginateUrl,
+            'filterTag' => $filterTag,
 {{FILTER_ASSIGN}}
         ]);
         $this->tag->prependTitle('Manager {{VARIABLE_NAME}}');
@@ -81,6 +82,7 @@ class {{CLASS_NAME}} extends {{BASE_CONTROLLER}}
             if ($this->security->checkToken()) {
                 $formData = $this->request->getPost();
                 ${{VARIABLE_NAME}} = new {{MODEL_NAME}}();
+
 {{ADD_ASSIGN_PROPERTY}}
 
                 if (${{VARIABLE_NAME}}->create()) {

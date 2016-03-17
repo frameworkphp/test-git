@@ -355,7 +355,32 @@ $(function () {
         }
     });
 
-    $('#btnSearch').click(function() {
+    $('#btnSearch').click(function () {
+        search();
+    });
+
+    $('.addFilter').click(function () {
+        search();
+    });
+
+    $('.closeFilter').click(function () {
+        $(this).parent().parent().remove();
+        var type = $(this).attr('data-type');
+       // Get param filter
+        $('select[name^="filter"]').each(function () {
+            var obj = $(this);
+            if ($(this).attr('data-type') == type) {
+                obj.val('all');
+            }
+        });
+
+        $('input[name^="filter"]').each(function () {
+            var obj = $(this);
+            if ($(this).attr('data-type') == type) {
+                obj.val('');
+            }
+        });
+
         search();
     });
 
@@ -415,13 +440,27 @@ function getUrlPath() {
     return window.location.origin + window.location.pathname;
 }
 
-function search()
-{
+function search() {
     var queryUrl = {};
     var keyword = $('input[name^="q"]').val();
     if (keyword != '') {
         queryUrl['q'] = keyword;
     }
+
+    // Get param filter
+    $('select[name^="filter"]').each(function () {
+        var type = $(this).attr('data-type');
+        if ($(this).val() != 'all') {
+            queryUrl[type] = $(this).val();
+        }
+    });
+
+    $('input[name^="filter"]').each(function () {
+        var type = $(this).attr('data-type');
+        if ($(this).val() != '') {
+            queryUrl[type] = $(this).val();
+        }
+    });
 
     // Get param sort
     var sort = $('input[name^="sort"]').val();

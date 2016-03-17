@@ -582,10 +582,22 @@ class GeneratorController extends BaseController
 
                 $filterParam .= "        if ($" . $formParam['property'][$key] . "!= '') {\n";
                 $filterParam .= '            $parameter[\'' . $formParam['property'][$key] .'\'] = $' . $formParam['property'][$key] . ';' . "\n";
+                $filterParam .= '            $filterTag[] = [' . "\n";
+                $filterParam .= '                 \'name\' => \'' . $formParam['label'][$key] . '\',' . "\n";
+                $filterParam .= '                 \'key\' => \'' . $formParam['property'][$key] . '\',' . "\n";
+
+                if ($formParam['constant'][$key] == '') {
+                    $filterParam .= '                 \'value\' => $' . $formParam['property'][$key] . ',' . "\n";
+                } else {
+                    $filterParam .= '                 \'value\' => ' . $formParam['modelClass'] .'::$' . $formParam['property'][$key] . 'Name[$' . $formParam['property'][$key] . '],' . "\n";
+                }
+                $filterParam .= '            ];' . "\n";
                 $filterParam .= '            $queryUrl .= ($queryUrl == \'\' ? \'?\' : \'&\') . \'' . strtolower($formParam['property'][$key]) . '=\' . $' . $formParam['property'][$key] .';' . "\n";
                 $filterParam .= "        } \n\n";
 
-                $filterAssign .= '            \'' . $formParam['property'][$key] . '\' => ' . $formParam['modelClass'] .'::$' . $formParam['property'][$key] . 'Name,' . "\n";
+                if ($formParam['constant'][$key] != '') {
+                    $filterAssign .= '            \'' . $formParam['property'][$key] . '\' => ' . $formParam['modelClass'] . '::$' . $formParam['property'][$key] . 'Name,' . "\n";
+                }
             }
         }
 
@@ -596,16 +608,18 @@ class GeneratorController extends BaseController
 
         // add assign property
         $search['{{ADD_ASSIGN_PROPERTY}}'] = '';
-        foreach ($formParam['addEditExclude'] as $key => $value) {
-            if ($value == 'on') {
+        foreach ($formParam['property'] as $key => $value) {
+            if (isset($formParam['addEditExclude'][$key]) && $formParam['addEditExclude'][$key] == 'on') {
+
+            } else {
                 if ($formParam['property'][$key] == 'password') {
                     $search['{{ADD_ASSIGN_PROPERTY}}'] .= '                $' . $search['{{VARIABLE_NAME}}'] . '->'
-                        . $formParam['property'][$key] . ' = $this->security->hash($formData[\''
-                        . $formParam['property'][$key] . '\'])' . "\n";
+                        . $value . ' = $this->security->hash($formData[\''
+                        . $value . '\'])' . "\n";
                 } else {
                     $search['{{ADD_ASSIGN_PROPERTY}}'] .= '                $' . $search['{{VARIABLE_NAME}}'] . '->'
-                        . $formParam['property'][$key] . ' = $formData[\''
-                        . $formParam['property'][$key] . '\'];' . "\n";
+                        . $value . ' = $formData[\''
+                        . $value . '\'];' . "\n";
                 }
             }
         }

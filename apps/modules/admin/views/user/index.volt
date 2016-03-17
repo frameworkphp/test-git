@@ -27,7 +27,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group hide">
-                                        <input type="text" name="filter[email]" data-type="email" value="" class="input-sm custom-form">
+                                        <input type="text" name="filter[email]" data-type="email" value="{{parameter['email']}}" class="input-sm custom-form">
                                     </div>
                                     <div class="form-group hide">
                                         <select name="filter[status]" data-type="status" class="input-sm custom-form">
@@ -54,7 +54,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group inline">
-                                        <input type="button" class="btn btn-sm btn-info inline" value="Add Filter">
+                                        <input type="button" class="btn btn-sm btn-info inline addFilter" value="Add Filter">
                                     </div>
                                 </div>
                             </div>
@@ -67,6 +67,20 @@
                                 </span>
 
                         </div>
+                        {% if count(filterTag) %}
+                        <div class="filter-tags">
+                            <ul class="col-md-12 active-filters horizontal">
+                                {% for tag in filterTag %}
+                                <li class="tag">
+                                    <span>
+                                        <em>{{tag['name']}} is equal to <b>{{tag['value']}}</b></em>
+                                        <span class="close closeFilter" data-type="{{tag['key']}}"><i class="fa fa-times"></i></span>
+                                    </span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
                 </div>
 
                 <form method="post" name="appForm">

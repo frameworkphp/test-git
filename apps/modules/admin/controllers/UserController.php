@@ -41,18 +41,41 @@ class UserController extends BaseController
         ];
 
         // Get and add filter in parameter
+        $filterTag = [];
         $role = $this->request->getQuery('role', 'string', '');
         $status = $this->request->getQuery('status', 'int', '');
+        $email = $this->request->getQuery('email', 'string', '');
 
         if ($role != '') {
             $parameter['role'] = $role;
+            $filterTag[] = [
+                'name' => 'Role',
+                'key' => 'role',
+                'value' => User::$roles[$role],
+            ];
             $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'role=' . $role;
         }
 
         if ($status != '') {
             $parameter['status'] = $status;
+            $filterTag[] = [
+                'name' => 'Status',
+                'key' => 'status',
+                'value' => User::$statusName[$status],
+            ];
             $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'status=' . $status;
         }
+
+        if ($email != '') {
+            $parameter['email'] = $email;
+            $filterTag[] = [
+                'name' => 'Email',
+                'key' => 'email',
+                'value' => $email,
+            ];
+            $queryUrl .= ($queryUrl == '' ? '?' : '&') . 'email=' . $email;
+        }
+
 
         // Get list users
         $users = User::getUsers($parameter, '*', $this->recordPerPage, $page, $sort, $dir);
@@ -79,7 +102,8 @@ class UserController extends BaseController
             'pagination' => $users,
             'paginateUrl' => $paginateUrl,
             'roles' => User::$roles,
-            'status' => User::$statusName
+            'status' => User::$statusName,
+            'filterTag' => $filterTag
         ]);
         $this->tag->prependTitle('Manager user');
     }
